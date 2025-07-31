@@ -25,15 +25,19 @@ const router = createRouter({
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: () => import('../views/DashboardView.vue'),
+      component: () => import('../views/dashboard/DashboardView.vue'),
       children: [
         {
           path: 'products',
-          component: () => import('../views/ProductsView(dash).vue'),
+          component: () => import('../views/dashboard/ProductsView.vue'),
         },
         {
           path: 'orders',
-          component: () => import('../views/OrderView(dash).vue'),
+          component: () => import('../views/dashboard/OrderView.vue'),
+        },
+        {
+          path: 'test',
+          component: () => import('../views/TestView.vue'),
         },
       ],
     },

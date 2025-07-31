@@ -69,11 +69,11 @@ import { ref } from 'vue'
 import ProductsModal from '@/components/modal/ProductsModalDash.vue'
 import DeleteModal from '@/components/modal/DeleteProductModal.vue'
 import SectionLoading from '@/components/SectionLoading.vue'
-import Pagination from '@/components/PaginationDash.vue'
+import Pagination from '@/components/dashboard/PaginationDash.vue'
 
 import { useFormatNumber } from '@/composable/useFormat'
 import { getProducts, addProduct, editProduct, delProduct } from '@/composable/axiosDashAPI'
-import emitter from '@/emitter'
+import { useToast } from '@/composable/useToast'
 
 const { formatNumber } = useFormatNumber()
 const dataList = ref([{ title: '' }])
@@ -113,12 +113,12 @@ async function postAddData(data) {
     try {
       const resp = await addProduct(sendData)
       //開啟toast
-      emitter.emit('toast', { message: resp.data.message })
+      useToast(resp.data.message)
       //請求商品清單
       getProductData()
     } catch (error) {
       const errMsg = error.response.data.message.join('、')
-      emitter.emit('toast', { message: errMsg, type: 'danger' })
+      useToast(errMsg, 'danger')
     }
     modalRef.value?.hideModal()
     modalLoading.value = false
@@ -128,11 +128,11 @@ async function postAddData(data) {
   if (modalType.value === 'edit') {
     try {
       const resp = await editProduct(sendData)
-      emitter.emit('toast', { message: resp.data.message })
+      useToast(resp.data.message)
       getProductData(paginationData.value.current_page)
     } catch (error) {
       const errMsg = error.response.data.message.join('、')
-      emitter.emit('toast', { message: errMsg, type: 'danger' })
+      useToast(errMsg, 'danger')
     }
     modalRef.value?.hideModal()
     modalLoading.value = false
@@ -145,11 +145,11 @@ async function deleteProduct(id) {
   modalDelLoading.value = true
   try {
     const resp = await delProduct(id)
-    emitter.emit('toast', { message: resp.data.message })
+    useToast(resp.data.message)
     //關閉刪除的modal
     delModalRef.value?.hideModal()
     modalDelLoading.value = false
-    //請求商品清單(停留在刪除page)
+    //請求商品清單停留在刪除page
     getProductData(paginationData.value.current_page)
   } catch (error) {
     console.log('刪除商品失敗', error)
@@ -160,26 +160,20 @@ async function deleteProduct(id) {
 function addProductModal() {
   singleProductData.value = { is_enabled: 0 }
   modalType.value = 'add'
-  if (modalRef.value) {
-    modalRef.value.showModal()
-  }
+  modalRef.value?.showModal()
 }
 
 //開啟編輯商品modal
 function editProductModal(item) {
   singleProductData.value = { ...item }
   modalType.value = 'edit'
-  if (modalRef.value) {
-    modalRef.value.showModal()
-  }
+  modalRef.value?.showModal()
 }
 
 //開啟刪除資料modal
 function deleteProductModal(item) {
   singleProductData.value = { ...item }
-  if (delModalRef.value) {
-    delModalRef.value.showModal()
-  }
+  delModalRef.value?.showModal()
 }
 
 //開場執行 "請求商品清單"

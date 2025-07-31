@@ -7,7 +7,7 @@
 <script setup>
 import axios from 'axios'
 import { useRouter } from 'vue-router'
-import navbar from '@/components/NavbarDash.vue'
+import navbar from '@/components/dashboard/NavbarDash.vue'
 import emitter from '@/emitter'
 
 const router = useRouter()

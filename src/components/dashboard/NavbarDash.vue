@@ -26,6 +26,12 @@
             >
             <!-- <a class="nav-link" href="#">Link</a> -->
           </li>
+          <li class="nav-item">
+            <RouterLink to="/dashboard/test" class="nav-link" active-class="active"
+              >測試</RouterLink
+            >
+            <!-- <a class="nav-link" href="#">Link</a> -->
+          </li>
         </ul>
         <button
           type="button"
