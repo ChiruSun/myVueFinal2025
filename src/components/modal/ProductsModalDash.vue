@@ -32,15 +32,19 @@
                 <div class="mb-3">
                   <label for="customFile" class="form-label"
                     >或 上傳圖片
+
                     <i class="fas fa-spinner fa-spin"></i>
                   </label>
                   <input
                     type="file"
                     id="customFile"
-                    class="form-control"
+                    class="form-control mb-2"
                     ref="imgInput"
-                    @change="uploadImg"
+                    @change="cropImg"
                   />
+                  <p v-if="exceedSize" class="text-danger">
+                    圖片容量超過3MB，無法上傳，請選擇較小圖片
+                  </p>
                 </div>
                 <img class="img-fluid" :src="modalData.imageUrl" />
                 <!-- 延伸技巧，多圖 -->
@@ -161,7 +165,13 @@
             <button type="submit" class="btn btn-primary">確認</button>
           </div>
         </form>
-        <SectionLoading v-if="loading"></SectionLoading>
+        <SectionLoading v-if="loading || PModalLoading"></SectionLoading>
+        <ImgCropModal
+          :isOpen="isCropOpen"
+          :image="imgToUrl"
+          @close="cropClose"
+          @crop-send="uploadCropImg"
+        ></ImgCropModal>
       </div>
     </div>
   </div>
@@ -171,16 +181,23 @@ import { ref, watch } from 'vue'
 import axios from 'axios'
 
 import { useModal } from '@/composable/useModal'
+import ImgCropModal from './ImgCropModal.vue'
 import SectionLoading from '../SectionLoading.vue'
 
 const props = defineProps({ tempData: Object, loading: Boolean })
 const emit = defineEmits(['emitModal'])
 const modalData = ref({ title: '', category: '', unit: '', origin_price: '', price: '' })
+const PModalLoading = ref(false)
 
 //DOM本體
 const modalRef = ref(null)
 const formRef = ref(null)
 const imgInput = ref(null)
+//裁切圖片
+const exceedSize = ref(false)
+const isCropOpen = ref(false)
+const imgToUrl = ref(null)
+let previousUrl = null // 用來釋放舊的 object URL
 
 const { showModal, hideModal } = useModal(modalRef)
 
@@ -196,17 +213,20 @@ watch(
   },
 )
 
-//上傳圖片
-async function uploadImg() {
+//裁剪後圖片上傳
+async function uploadCropImg(cropFile) {
+  PModalLoading.value = true
+  cropClose()
   const ImgAPI = `${import.meta.env.VITE_API_URL}v2/api/${import.meta.env.VITE_API_PATH}/admin/upload`
-  const file = imgInput.value.files[0]
   const formData = new FormData()
-  formData.append('file-to-upload', file)
+  formData.append('file-to-upload', cropFile)
   try {
     const resp = await axios.post(ImgAPI, formData)
     modalData.value.imageUrl = resp.data.imageUrl
   } catch (error) {
-    console.log('新增圖片失敗', error)
+    console.log('裁剪圖片上傳失敗', error)
+  } finally {
+    PModalLoading.value = false
   }
 }
 
@@ -218,7 +238,7 @@ function correctionPrice(e) {
   modalData.value.price = e.target.value.replace(/\D/g, '')
 }
 
-//emit
+//emit送出表單資料
 function emitSendData() {
   const form = formRef.value
   if (!form.checkValidity()) {
@@ -226,6 +246,35 @@ function emitSendData() {
     return
   }
   emit('emitModal', modalData.value)
+}
+
+//開啟cropModal
+function cropImg(event) {
+  exceedSize.value = false
+  const file = event.target.files[0]
+  if (file) {
+    const maxSize = 2 * 1024 * 1024 // 圖片檔案限制3MB
+    if (file.size > maxSize) {
+      exceedSize.value = true
+      imgInput.value.value = ''
+      return
+    }
+
+    isCropOpen.value = true
+    // 釋放舊的 Object URL
+    if (previousUrl) {
+      URL.revokeObjectURL(previousUrl)
+    }
+    const objectUrl = URL.createObjectURL(file)
+    previousUrl = objectUrl
+    imgToUrl.value = objectUrl
+  }
+}
+
+//關閉crop視窗
+function cropClose() {
+  isCropOpen.value = false
+  imgInput.value.value = ''
 }
 
 defineExpose({

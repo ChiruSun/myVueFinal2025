@@ -27,10 +27,14 @@
             <!-- <a class="nav-link" href="#">Link</a> -->
           </li>
           <li class="nav-item">
+            <RouterLink to="/dashboard/coupon" class="nav-link" active-class="active"
+              >優惠劵</RouterLink
+            >
+          </li>
+          <li class="nav-item">
             <RouterLink to="/dashboard/test" class="nav-link" active-class="active"
               >測試</RouterLink
             >
-            <!-- <a class="nav-link" href="#">Link</a> -->
           </li>
         </ul>
         <button

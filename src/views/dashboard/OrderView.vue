@@ -65,28 +65,37 @@
   </div>
   <SectionLoading v-show="loading"></SectionLoading>
   <OrderModal ref="detailModal" :order-data="singleOrderData"></OrderModal>
+  <DeleteOrderModal
+    ref="DelModal"
+    :order-data="singleOrderData"
+    :loading="ModalLoading"
+    @emit-del="delOrderData"
+  ></DeleteOrderModal>
 </template>
 <script setup>
 import { ref } from 'vue'
 import SectionLoading from '@/components/SectionLoading.vue'
 import OrderModal from '@/components/modal/OrderModal.vue'
+import DeleteOrderModal from '@/components/modal/DeleteOrderModal.vue'
 
-import { getOrders } from '@/composable/axiosDashAPI'
+import { getOrders, delOrder } from '@/composable/axiosDashAPI'
 import { useFormatDate, useFormatTime } from '@/composable/useFormat'
+import { useToast } from '@/composable/useToast'
 
 const dataList = ref([{ title: '' }])
 const singleOrderData = ref({})
 const loading = ref(false)
+const ModalLoading = ref(false)
+//Modal DOM
 const detailModal = ref(null)
+const DelModal = ref(null)
 
 //取得訂單資料
 async function getOrderData() {
   loading.value = true
   try {
     const resp = await getOrders()
-    // console.log('訂單回傳', resp.data.orders)
     dataList.value = resp.data.orders
-    console.log('資料', dataList.value)
   } catch (error) {
     console.log(error)
   } finally {
@@ -106,6 +115,27 @@ function viewOrderModal(p) {
   temp.create_time = useFormatTime(temp.create_at)
   singleOrderData.value = temp
   detailModal.value?.showModal()
+}
+
+//刪除訂單
+function deleteOrderModal(p) {
+  singleOrderData.value = p
+  DelModal.value?.showModal()
+}
+
+//emit出來id做刪除
+async function delOrderData(id) {
+  ModalLoading.value = true
+  try {
+    const resp = await delOrder(id)
+    useToast(resp.data.message)
+    console.log('刪除訂單成功', resp)
+  } catch (error) {
+    console.log('刪除訂單失敗', error)
+  } finally {
+    ModalLoading.value = false
+    DelModal.value?.hideModal()
+  }
 }
 
 getOrderData()

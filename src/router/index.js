@@ -36,6 +36,10 @@ const router = createRouter({
           component: () => import('../views/dashboard/OrderView.vue'),
         },
         {
+          path: 'coupon',
+          component: () => import('../views/dashboard/CouponView.vue'),
+        },
+        {
           path: 'test',
           component: () => import('../views/TestView.vue'),
         },
