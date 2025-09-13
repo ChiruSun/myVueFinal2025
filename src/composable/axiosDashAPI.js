@@ -1,4 +1,5 @@
 import axios from 'axios'
+const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexVueCookie\s*\=\s*([^;]*).*$)|^.*$/, '$1')
 const APIUrl = import.meta.env.VITE_API_URL
 const APIPath = import.meta.env.VITE_API_PATH
 //簡化網址
@@ -9,6 +10,7 @@ const DashPath = `${APIUrl}v2/api/${APIPath}/admin`
 //取得產品資料
 function getProducts(page) {
   return axios.get(`${DashPath}/products?page=${page}`)
+  
 }
 
 //新增產品資料
