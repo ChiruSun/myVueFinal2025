@@ -178,11 +178,11 @@
 </template>
 <script setup>
 import { ref, watch } from 'vue'
-import axios from 'axios'
 
+import { updImg } from '@/composable/axiosDashAPI'
 import { useModal } from '@/composable/useModal'
 import ImgCropModal from './ImgCropModal.vue'
-import SectionLoading from '../SectionLoading.vue'
+import SectionLoading from '../../SectionLoading.vue'
 
 const props = defineProps({ tempData: Object, loading: Boolean })
 const emit = defineEmits(['emitModal'])
@@ -217,11 +217,10 @@ watch(
 async function uploadCropImg(cropFile) {
   PModalLoading.value = true
   cropClose()
-  const ImgAPI = `${import.meta.env.VITE_API_URL}v2/api/${import.meta.env.VITE_API_PATH}/admin/upload`
   const formData = new FormData()
   formData.append('file-to-upload', cropFile)
   try {
-    const resp = await axios.post(ImgAPI, formData)
+    const resp = await updImg(formData)
     modalData.value.imageUrl = resp.data.imageUrl
   } catch (error) {
     console.log('裁剪圖片上傳失敗', error)

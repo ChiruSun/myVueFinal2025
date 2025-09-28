@@ -7,19 +7,16 @@
 <script setup>
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import { verifyLogin } from '@/composable/axiosDashAPI'
 import navbar from '@/components/dashboard/NavbarDash.vue'
 import emitter from '@/emitter'
 
 const router = useRouter()
 
-//取出token並放入全域的發送header
-const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexVueCookie\s*\=\s*([^;]*).*$)|^.*$/, '$1')
-axios.defaults.headers.common['Authorization'] = token
-
 //驗證token
-async function verifyLogin() {
+async function verify() {
   try {
-    const resp = await axios.post(`${import.meta.env.VITE_API_URL}v2/api/user/check`)
+    const resp = await verifyLogin()
     // console.log('進入dash驗證通過', resp)
   } catch (error) {
     emitter.emit('toast', {
@@ -30,5 +27,5 @@ async function verifyLogin() {
     router.push('/login')
   }
 }
-verifyLogin()
+verify()
 </script>

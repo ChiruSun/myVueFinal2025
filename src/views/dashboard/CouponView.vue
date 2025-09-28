@@ -69,8 +69,8 @@
 <script setup>
 import { ref } from 'vue'
 
-import CouponModal from '@/components/modal/CouponModal.vue'
-import DeleteCouponModal from '@/components/modal/DeleteCouponModal.vue'
+import CouponModal from '@/components/modal/dashboardModal/CouponModal.vue'
+import DeleteCouponModal from '@/components/modal/dashboardModal/DeleteCouponModal.vue'
 import SectionLoading from '@/components/SectionLoading.vue'
 import Pagination from '@/components/dashboard/PaginationDash.vue'
 

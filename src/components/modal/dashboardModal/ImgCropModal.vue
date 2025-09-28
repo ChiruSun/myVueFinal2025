@@ -123,6 +123,8 @@ function getCroppedImage() {
 .modal-content {
   background-color: #fff;
   width: max-content;
+  max-height: 80vh; /* 限制最高高度 */
+  overflow-y: auto; /* 超出時可滑動 */
   padding: 2rem;
   border-radius: 12px;
   text-align: center;

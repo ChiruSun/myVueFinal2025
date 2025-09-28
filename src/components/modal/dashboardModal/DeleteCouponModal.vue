@@ -13,9 +13,8 @@
         </div>
         <div class="modal-body">
           <p>
-            你確定要刪除email為<span class="text-danger fw-bold"
-              >「{{ delModalData?.user?.email }}」</span
-            >的訂單資料嗎？(刪除後將無法恢復)
+            你確定要刪除<span class="text-danger fw-bold">「{{ delModalData?.title }}」</span
+            >的優惠卷資料嗎？(刪除後將無法恢復)
           </p>
         </div>
         <div class="modal-footer">
@@ -30,7 +29,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useModal } from '@/composable/useModal'
-import SectionLoading from '../SectionLoading.vue'
+import SectionLoading from '../../SectionLoading.vue'
 const props = defineProps({ orderData: Object, loading: Boolean })
 const delModalData = ref()
 // const loading = ref(false)

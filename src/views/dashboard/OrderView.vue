@@ -75,8 +75,8 @@
 <script setup>
 import { ref } from 'vue'
 import SectionLoading from '@/components/SectionLoading.vue'
-import OrderModal from '@/components/modal/OrderModal.vue'
-import DeleteOrderModal from '@/components/modal/DeleteOrderModal.vue'
+import OrderModal from '@/components/modal/dashboardModal/OrderModal.vue'
+import DeleteOrderModal from '@/components/modal/dashboardModal/DeleteOrderModal.vue'
 
 import { getOrders, delOrder } from '@/composable/axiosDashAPI'
 import { useFormatDate, useFormatTime } from '@/composable/useFormat'

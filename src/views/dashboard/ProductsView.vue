@@ -66,8 +66,8 @@
 <script setup>
 import { ref } from 'vue'
 
-import ProductsModal from '@/components/modal/ProductsModalDash.vue'
-import DeleteModal from '@/components/modal/DeleteProductModal.vue'
+import ProductsModal from '@/components/modal/dashboardModal/ProductsModalDash.vue'
+import DeleteModal from '@/components/modal/dashboardModal/DeleteProductModal.vue'
 import SectionLoading from '@/components/SectionLoading.vue'
 import Pagination from '@/components/dashboard/PaginationDash.vue'
 
