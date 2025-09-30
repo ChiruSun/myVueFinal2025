@@ -2,7 +2,7 @@
   <div class="mybanner">
     <div class="position-relative">
       <div class="mask">
-        <div class="womanbox animate__animated animate__fadeInLeft">
+        <div class="womanbox">
           <img class="woman-img" @load="handleLoad" src="/src/img/woman_shampoo.png" alt="" />
         </div>
       </div>
@@ -33,7 +33,7 @@
         />
       </div>
     </div>
-    <!-- <img src="https://picsum.photos/800/400?random=1" @load="handleLoad" /> -->
+    <img src="https://picsum.photos/800/400?random=1" @load="handleLoad" />
 
     <div class="can-shadow1"><div class="circle-grad"></div></div>
     <div class="can-shadow2"><div class="circle-grad"></div></div>
@@ -85,10 +85,10 @@ function handleLoad() {
 .womanbox {
   position: absolute;
   top: 100px;
-  right: 100px;
   z-index: 5;
   width: 650px;
   height: 650px;
+  animation: moveWoman 0.8s cubic-bezier(0, 0, 0.2, 1) forwards;
 }
 .woman-img {
   max-width: 100%;
@@ -103,28 +103,28 @@ function handleLoad() {
 .shampoo-can1 {
   position: absolute;
   z-index: 10;
-  top: 200px;
   left: 150px;
   width: 180px;
   height: 500px;
+  animation: can1Ani 0.8s cubic-bezier(0, 0, 0.2, 1) 0.2s both;
 }
 
 .shampoo-can2 {
   position: absolute;
   z-index: 9;
-  top: 280px;
   left: 300px;
   width: 130px;
   height: 390px;
+  animation: can2Ani 0.8s cubic-bezier(0, 0, 0.2, 1) 0.35s both;
 }
 
 .shampoo-can3 {
   position: absolute;
   z-index: 8;
-  top: 310px;
   left: 430px;
   width: 110px;
   height: 320px;
+  animation: can3Ani 0.8s cubic-bezier(0, 0, 0.2, 1) 0.4s both;
 }
 
 .can-shadow1 {
@@ -134,6 +134,7 @@ function handleLoad() {
   left: 92px;
   width: 300px;
   height: 50px;
+  animation: shadowScale 0.8s 0.2s both;
 }
 
 .can-shadow2 {
@@ -143,6 +144,7 @@ function handleLoad() {
   left: 262px;
   width: 200px;
   height: 33px;
+  animation: shadowScale 0.8s 0.35s both;
 }
 
 .can-shadow3 {
@@ -152,6 +154,7 @@ function handleLoad() {
   left: 412px;
   width: 150px;
   height: 25px;
+  animation: shadowScale 0.8s 0.4s both;
 }
 
 .circle-grad {
@@ -203,6 +206,12 @@ function handleLoad() {
   font-weight: 700;
 }
 
+/* 預設動畫暫停 */
+.animate {
+  opacity: 0;
+  animation-play-state: paused;
+}
+
 @media (max-width: 1400px) {
   .mybanner {
     height: 700px;
@@ -214,24 +223,73 @@ function handleLoad() {
     top: 100px;
     width: 600px;
     height: 600px;
-    right: 10px;
+    animation: moveWoman2 0.8s cubic-bezier(0, 0, 0.2, 1) forwards;
   }
 
   .banner-shampoo-box {
     left: -60px;
   }
 }
-</style>
 
-<style>
-@keyframes fadeInLeft {
+@keyframes moveWoman {
   from {
+    right: 200px; /* 從畫面外左邊進入 */
     opacity: 0;
-    transform: translate3d(-50px, 0, 0);
   }
   to {
+    right: 100px;
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes moveWoman2 {
+  from {
+    right: 70px; /* 從畫面外左邊進入 */
+    opacity: 0;
+  }
+  to {
+    right: 10px;
+    opacity: 1;
+  }
+}
+
+@keyframes can1Ani {
+  from {
+    top: 100px; /* 從畫面外左邊進入 */
+    opacity: 0;
+  }
+  to {
+    top: 200px;
+    opacity: 1;
+  }
+}
+@keyframes can2Ani {
+  from {
+    top: 200px; /* 從畫面外左邊進入 */
+    opacity: 0;
+  }
+  to {
+    top: 280px;
+    opacity: 1;
+  }
+}
+@keyframes can3Ani {
+  from {
+    top: 200px; /* 從畫面外左邊進入 */
+    opacity: 0;
+  }
+  to {
+    top: 310px;
+    opacity: 1;
+  }
+}
+
+@keyframes shadowScale {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
   }
 }
 </style>

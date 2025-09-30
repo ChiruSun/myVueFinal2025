@@ -25,6 +25,10 @@ const router = createRouter({
           path: 'connect_us',
           component: () => import('../views/user/UserContentUs.vue'),
         },
+        {
+          path: 'test',
+          component: () => import('../views/TestView.vue'),
+        },
       ],
     },
     {

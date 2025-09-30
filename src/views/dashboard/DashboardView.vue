@@ -5,7 +5,6 @@
   </div>
 </template>
 <script setup>
-import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { verifyLogin } from '@/composable/axiosDashAPI'
 import navbar from '@/components/dashboard/NavbarDash.vue'
