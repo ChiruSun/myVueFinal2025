@@ -40,7 +40,7 @@
         <button
           type="button"
           class="btn btn-secondary px-3"
-          @click.prevent="logout"
+          @click.prevent="navLogout"
           :disabled="btnDisable"
         >
           登出
@@ -51,25 +51,28 @@
 </template>
 <script setup>
 import { ref } from 'vue'
-import axios from 'axios'
 import { useRouter } from 'vue-router'
 import emitter from '@/emitter'
+import { logout } from '@/composable/axiosDashAPI'
 const router = useRouter()
 
 const btnDisable = ref(false)
 
-async function logout() {
+async function navLogout() {
   btnDisable.value = true
   try {
-    const resp = await axios.post(`${import.meta.env.VITE_API_URL}v2/logout`, {})
+    const resp = await logout()
     emitter.emit('toast', {
       message: resp.data.message,
     })
-    btnDisable.value = false
     router.push('/login')
   } catch (error) {
-    console.log('登出錯誤訊息')
-    console.log(error)
+    emitter.emit('toast', {
+      message: error.response.data.message,
+      type: 'danger',
+    })
+  } finally {
+    btnDisable.value = false
   }
 }
 </script>

@@ -107,7 +107,7 @@
 import { ref, watch, computed } from 'vue'
 
 import { useModal } from '@/composable/useModal'
-import SectionLoading from '../SectionLoading.vue'
+import SectionLoading from '@/components/SectionLoading.vue'
 
 const props = defineProps({ tempData: Object, loading: Boolean })
 const emit = defineEmits(['emitModal'])

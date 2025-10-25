@@ -17,6 +17,11 @@ function verifyLogin() {
   return dashAxios.post(`${APIUrl}v2/api/user/check`)
 }
 
+//登出
+function logout() {
+  return dashAxios.post(`${APIUrl}v2/logout`)
+}
+
 //上傳圖片
 function updImg(img) {
   return dashAxios.post(`upload`, img)
@@ -80,6 +85,7 @@ function delCoupon(id) {
 
 export {
   verifyLogin,
+  logout,
   updImg,
   getProducts,
   addProduct,

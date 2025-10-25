@@ -59,16 +59,17 @@ async function loginSubmit() {
     const { token } = res.data
     const expireTime = new Date(res.data.expired).toUTCString()
     document.cookie = `hexVueCookie=${token}; expires=${expireTime}; path=/;`
-    btnDisable.value = false
     router.push('/dashboard/products')
     emitter.emit('toast', {
-      message: '登入成功',
+      message: res.data.message,
     })
   } catch (error) {
     emitter.emit('toast', {
-      message: '登入失敗，請重新登入',
+      message: error.response.data.message,
       type: 'danger',
     })
+  } finally {
+    btnDisable.value = false
   }
 }
 </script>

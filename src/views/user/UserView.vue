@@ -1,14 +1,42 @@
 <template>
-  <Navbar class="position-absolute my-nav-ani"></Navbar>
-  <router-view></router-view>
+  <div class="mybg">
+    <Transition name="fade" mode="out-in">
+      <Suspense>
+        <div>
+          <Navbar class="position-absolute my-nav-ani"></Navbar>
+          <router-view></router-view>
+        </div>
+        <template #fallback>
+          <div>
+            <HomeLoading></HomeLoading>
+          </div>
+        </template>
+      </Suspense>
+    </Transition>
+  </div>
 </template>
 <script setup>
+import HomeLoading from '@/components/user/HomeLoading.vue'
 import Navbar from '@/components/user/Navbar.vue'
 </script>
 <style scoped>
+.mybg {
+  background-color: rgb(233, 241, 235);
+}
+
 .my-nav-ani {
   animation: navAni 0.5s ease-out 0.5s both;
 }
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
 @keyframes navAni {
   from {
     top: -100px;
