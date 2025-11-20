@@ -19,11 +19,7 @@
       class="pt-3"
     >
       <swiper-slide v-for="i in cardData" :key="i.id">
-        <a
-          :href="i.link"
-          class="text-decoration-none"
-          @mouseenter="stopAutoplay"
-          @mouseleave="startAutoplay"
+        <a :href="i.link" class="text-decoration-none"
           ><div class="card rounded-4 my-card" :style="{ '--item-bg-img': `url(${i.bgImgUrl})` }">
             <div class="card-body rounded-4 mycard-bg">
               <div class="d-flex">
@@ -63,6 +59,12 @@
         ></a>
       </swiper-slide>
     </swiper>
+    <div class="container d-flex justify-content-end">
+      <button type="button" @click="clickStop" class="my-stop-button">
+        <span v-if="isStop"><i class="bi bi-play-fill me-1"></i>開始自動播放</span>
+        <span v-if="!isStop"><i class="bi bi-pause-fill me-1"></i>暫停自動播放</span>
+      </button>
+    </div>
   </div>
 </template>
 <script setup>
@@ -78,6 +80,7 @@ import 'swiper/css/pagination'
 import { FreeMode, Autoplay } from 'swiper/modules'
 
 const swiperInstance = ref(null) // Swiper 實例
+const isStop = ref(false)
 
 //輪播swiper卡片資料
 const cardData = ref([
@@ -150,38 +153,39 @@ const onSwiperInit = (swiper) => {
   swiperInstance.value = swiper
 }
 
-//暫停自動撥放
-function stopAutoplay() {
+function clickStop() {
   if (!swiperInstance.value) {
     return
   }
   //取得平移值
   const translate = swiperInstance.value.getTranslate()
-  //將位置設定在現在平移的位置
-  swiperInstance.value.setTranslate(translate)
-  //暫停動畫
-  swiperInstance.value.autoplay.stop()
-}
-function startAutoplay() {
-  const translate = swiperInstance.value.getTranslate()
-  const actIdx = swiperInstance.value.activeIndex
-  let runSpeed = 3500
-  //計算速率
-  if (actIdx == 1) {
-    const speed = (Math.abs(-486 - translate) / 486) * 7000
-    runSpeed = speed.toFixed(2)
+  if (!isStop.value) {
+    //將位置設定在現在平移的位置
+    swiperInstance.value.setTranslate(translate)
+    //暫停動畫
+    swiperInstance.value.autoplay.stop()
   }
-  if (actIdx == 2) {
-    const speed = (Math.abs(-972 - translate) / 486) * 7000
-    runSpeed = speed.toFixed(2)
+  if (isStop.value) {
+    const actIdx = swiperInstance.value.activeIndex
+    let runSpeed = 3500
+    //計算速率
+    if (actIdx == 1) {
+      const speed = (Math.abs(-486 - translate) / 486) * 7000
+      runSpeed = speed.toFixed(2)
+    }
+    if (actIdx == 2) {
+      const speed = (Math.abs(-972 - translate) / 486) * 7000
+      runSpeed = speed.toFixed(2)
+    }
+    if (actIdx == 3) {
+      const speed = (Math.abs(-1458 - translate) / 486) * 7000
+      runSpeed = speed.toFixed(2)
+    }
+    //運行到索引號等於actIdx的投影片
+    swiperInstance.value.slideTo(actIdx, runSpeed)
+    swiperInstance.value.autoplay.start()
   }
-  if (actIdx == 3) {
-    const speed = (Math.abs(-1458 - translate) / 486) * 7000
-    runSpeed = speed.toFixed(2)
-  }
-  //運行到索引號等於actIdx的投影片
-  swiperInstance.value.slideTo(actIdx, runSpeed)
-  swiperInstance.value.autoplay.start()
+  isStop.value = !isStop.value
 }
 </script>
 <style scoped lang="scss">
@@ -255,6 +259,15 @@ function startAutoplay() {
 
 .my-card-arr {
   transition: all 0.3s;
+}
+
+.my-stop-button {
+  color: rgb(85, 103, 88);
+  font-weight: bold;
+  background-color: rgb(233, 241, 235);
+  border-radius: 10px;
+  border: 2px solid rgb(85, 103, 88);
+  padding: 5px 10px;
 }
 </style>
 <style>

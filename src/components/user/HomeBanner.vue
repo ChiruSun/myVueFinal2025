@@ -1,37 +1,45 @@
 <template>
   <div class="mybanner">
-    <div class="position-relative">
-      <div class="mask">
-        <div class="womanbox">
-          <img class="woman-img" src="/src/img/woman_shampoo.png" alt="" />
+    <div>
+      <div>
+        <div class="mask">
+          <div class="row woman-padding">
+            <div class="col-7">
+              <!-- 虛擬排版區塊 -->
+            </div>
+            <div class="col-5 asp-woman">
+              <div class="womanbox">
+                <img class="img-fluid" src="/src/img/woman_shampoo.png" alt="" />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="banner-shampoo-box">
-      <div class="shampoo-can1">
-        <img src="/src/img/can_lavender.png" class="w-100 h-100" alt="shampoo_can1" />
+      <div>
+        <div class="shampoo-can1">
+          <img src="/src/img/can_lavender.png" class="w-100 h-100" alt="shampoo_can1" />
+        </div>
+        <div class="shampoo-can2">
+          <img src="/src/img/can_aloe_vera.png" class="w-100 h-100" alt="shampoo_can1" />
+        </div>
+        <div class="shampoo-can3">
+          <img src="/src/img/can_rose.png" class="w-100 h-100" alt="shampoo_can1" />
+        </div>
+        <div class="can-shadow1"><div class="circle-grad"></div></div>
+        <div class="can-shadow2"><div class="circle-grad"></div></div>
+        <div class="can-shadow3"><div class="circle-grad"></div></div>
+        <div class="titlebox">
+          <h1 class="title">沁入内心</h1>
+        </div>
+        <div class="titlebox2">
+          <p class="title2">最信任的洗髮乳</p>
+        </div>
+        <div class="titlebox3">
+          <p>
+            還在為髮質問題煩惱嗎？<br />我們擁有針對各種髮質的洗髮精<br />均為天然植物精萃<br />您一定可以從中找到適合您的洗髮精<br />讓您靠近大自然之餘也能好好保養頭髮
+          </p>
+        </div>
       </div>
-      <div class="shampoo-can2">
-        <img src="/src/img/can_aloe_vera.png" class="w-100 h-100" alt="shampoo_can1" />
-      </div>
-      <div class="shampoo-can3">
-        <img src="/src/img/can_rose.png" class="w-100 h-100" alt="shampoo_can1" />
-      </div>
-    </div>
-
-    <div class="can-shadow1"><div class="circle-grad"></div></div>
-    <div class="can-shadow2"><div class="circle-grad"></div></div>
-    <div class="can-shadow3"><div class="circle-grad"></div></div>
-    <div class="titlebox">
-      <h1 class="title">沁入内心</h1>
-    </div>
-    <div class="titlebox2">
-      <p class="title2">最信任的洗髮乳</p>
-    </div>
-    <div class="titlebox3">
-      <p>
-        還在為髮質問題煩惱嗎？<br />我們擁有針對各種髮質的洗髮精<br />均為天然植物精萃<br />您一定可以從中找到適合您的洗髮精<br />讓您靠近大自然之餘也能好好保養頭髮
-      </p>
     </div>
   </div>
 </template>
@@ -39,35 +47,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;700;900&display=swap');
 .mybanner {
   max-width: 100%;
-  height: 750px;
-  background-image: url(/src/img/banner_2.png);
-  background-repeat: no-repeat;
-  background-position: right bottom;
+  background-image: url(/src/img/banner_bg.png);
   background-color: rgb(233, 241, 235);
+  background-size: cover;
+  background-position: top left;
 }
 
 .mask {
-  max-width: 100%;
-  height: 750px;
-  mask-image: url(/src/img/banner_2.png);
-  mask-position: right bottom;
-}
-.womanbox {
-  position: absolute;
-  top: 100px;
-  z-index: 5;
-  width: 650px;
-  height: 650px;
-  animation: moveWoman 0.8s cubic-bezier(0, 0, 0.2, 1) forwards;
-}
-.woman-img {
-  max-width: 100%;
-  max-height: 100%;
+  mask-image: url(/src/img/banner_bg.png);
+  mask-size: cover;
+  mask-position: top left;
 }
 
-.banner-shampoo-box {
-  position: absolute;
-  top: 0;
+.woman-padding {
+  padding: 100px 80px 0;
+}
+
+.asp-woman {
+  aspect-ratio: 1/1.057;
+}
+
+.womanbox {
+  animation: moveWoman 0.8s cubic-bezier(0, 0, 0.2, 1) forwards;
 }
 
 .shampoo-can1 {
@@ -183,31 +184,24 @@
 }
 
 @media (max-width: 1400px) {
-  .mybanner {
-    height: 700px;
+  .woman-padding {
+    padding: 100px 10px 0;
   }
-  .mask {
-    height: 700px;
-  }
-  .womanbox {
-    top: 100px;
-    width: 600px;
-    height: 600px;
-    animation: moveWoman2 0.8s cubic-bezier(0, 0, 0.2, 1) forwards;
-  }
+}
 
-  .banner-shampoo-box {
-    left: -60px;
+@media (max-width: 992px) {
+  .womanbox {
+    display: none;
   }
 }
 
 @keyframes moveWoman {
   from {
-    right: 200px; /* 從畫面外左邊進入 */
+    transform: translateX(-150px); /* 從畫面外左邊進入 */
     opacity: 0;
   }
   to {
-    right: 100px;
+    transform: translateX(0);
     opacity: 1;
   }
 }

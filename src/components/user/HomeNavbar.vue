@@ -5,7 +5,7 @@
         <img src="/src/img/HINheart_LOGO2.png" alt="" width="120" height="80" />
       </RouterLink>
       <button
-        class="navbar-toggler"
+        class="navbar-toggler my-nav-toggler"
         type="button"
         data-bs-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent"
@@ -40,5 +40,9 @@
 <style scoped>
 .my-nav {
   z-index: 10;
+}
+
+.my-nav-toggler {
+  background-color: rgba(0, 0, 0, 0.3);
 }
 </style>

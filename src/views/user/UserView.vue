@@ -17,7 +17,7 @@
 </template>
 <script setup>
 import HomeLoading from '@/components/user/HomeLoading.vue'
-import Navbar from '@/components/user/Navbar.vue'
+import Navbar from '@/components/user/HomeNavbar.vue'
 </script>
 <style scoped>
 .mybg {
