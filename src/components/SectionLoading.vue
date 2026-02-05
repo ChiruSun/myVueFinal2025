@@ -5,7 +5,7 @@
 </template>
 <style scoped>
 .loading-w-bg {
-  background-color: #fff;
+  background-color: white;
   opacity: 0.5;
   position: absolute;
   inset: 0;

@@ -3,7 +3,7 @@
     <Transition name="fade" mode="out-in">
       <Suspense>
         <div>
-          <Navbar class="position-absolute my-nav-ani"></Navbar>
+          <Navbar class="my-nav-ani"></Navbar>
           <router-view></router-view>
         </div>
         <template #fallback>

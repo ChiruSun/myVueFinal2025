@@ -1,7 +1,6 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 import ToastList from './components/ToastList.vue'
-import './assets/all.scss'
 
 //任一使用toast範例
 // emitter.emit('toast', {
@@ -12,7 +11,6 @@ import './assets/all.scss'
 </script>
 
 <template>
-  <!-- <RouterLink to="/about">About</RouterLink> -->
   <RouterView />
   <ToastList />
 </template>

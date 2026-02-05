@@ -123,8 +123,7 @@ function getCroppedImage() {
 .modal-content {
   background-color: #fff;
   width: max-content;
-  max-height: 80vh; /* 限制最高高度 */
-  overflow-y: auto; /* 超出時可滑動 */
+  height: 800px;
   padding: 2rem;
   border-radius: 12px;
   text-align: center;
@@ -132,28 +131,14 @@ function getCroppedImage() {
 }
 
 .cropbox {
-  width: 600px;
-  height: 600px;
+  width: 550px;
+  height: 550px;
 }
 
 .cropper {
-  width: 600px;
-  height: 600px;
+  width: 550px;
+  height: 550px;
   border: 1px solid #ccc;
   margin: 1rem 0;
 }
-
-/* input[type='range'] {
-  accent-color: #0d6efd;
-} */
-
-/* input[type='range']::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 24px;
-  height: 24px;
-  background: #4caf50;
-  border-radius: 50%;
-  cursor: pointer;
-  box-shadow: 0 0 0 1px gray;
-} */
 </style>

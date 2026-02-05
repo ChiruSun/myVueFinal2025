@@ -1,32 +1,42 @@
 <template>
-  <nav class="navbar navbar-expand-lg w-100 pb-5 my-nav">
+  <nav class="navbar navbar-expand-lg w-100 pb-0 my-nav" :class="{ 'scrolled-nav ': isScrolled }">
     <div class="container-xxl">
-      <RouterLink to="/" class="navbar-brand">
-        <img src="/src/img/HINheart_LOGO2.png" alt="" width="120" height="80" />
+      <RouterLink
+        to="/"
+        class="navbar-brand ms-0 ms-sm-3 ms-md-5"
+        active-class=""
+        exact-active-class=""
+      >
+        <img
+          src="/src/img/HINheart_LOGO2.png"
+          alt=""
+          class="logo-img"
+          :class="{ 'scrolled-logo': isScrolled }"
+        />
       </RouterLink>
       <button
         class="navbar-toggler my-nav-toggler"
         type="button"
-        data-bs-target="#navbarSupportedContent"
+        @click="toggleMenu"
         aria-controls="navbarSupportedContent"
         aria-expanded="false"
         aria-label="Toggle navigation"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-        <ul class="navbar-nav mb-2 mb-lg-0">
-          <li class="nav-item border-start border-end border-dark">
+      <div class="collapse navbar-collapse justify-content-end" :class="{ show: isOpen }">
+        <ul class="navbar-nav mb-0">
+          <li class="nav-item my-nav-item-start">
             <RouterLink to="/products" class="nav-link px-4 fw-bold" active-class="active"
               >產品列表</RouterLink
             >
           </li>
-          <li class="nav-item border-end border-dark">
+          <li class="nav-item my-nav-item">
             <RouterLink to="/story" class="nav-link px-4 fw-bold" active-class="active"
               >緣起故事</RouterLink
             >
           </li>
-          <li class="nav-item border-end border-dark">
+          <li class="nav-item my-nav-item-end">
             <RouterLink to="/connect_us" class="nav-link px-4 fw-bold" active-class="active"
               >聯絡我們</RouterLink
             >
@@ -36,13 +46,130 @@
     </div>
   </nav>
 </template>
-<script setup></script>
+<script setup>
+import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { useRoute } from 'vue-router'
+
+const isScrolled = ref(false)
+const isOpen = ref(false)
+
+const route = useRoute()
+
+const handleScroll = () => {
+  isScrolled.value = window.scrollY > 0
+}
+
+const toggleMenu = () => {
+  isOpen.value = !isOpen.value
+}
+
+//換頁關閉collapse(拔除.show)
+watch(
+  () => route.fullPath,
+  () => {
+    isOpen.value = false
+  },
+)
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
+</script>
 <style scoped>
 .my-nav {
-  z-index: 10;
+  z-index: 11;
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0);
+
+  transition: background-color 0.2s;
+}
+
+.scrolled-nav {
+  position: fixed;
+  background-color: rgba(255, 255, 255, 0.9);
 }
 
 .my-nav-toggler {
-  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+.logo-img {
+  width: 120px;
+  height: 80px;
+  transition: all 0.5s;
+}
+
+.scrolled-logo {
+  width: 75px;
+  height: 50px;
+}
+
+/* router-link */
+.router-link-exact-active {
+  pointer-events: none;
+}
+
+.my-nav-item-start {
+  border: 1px solid black;
+  border-top: none;
+  border-bottom: none;
+}
+
+.my-nav-item,
+.my-nav-item-end {
+  border-right: 1px solid black;
+}
+
+.my-nav-item-start .nav-link:hover,
+.my-nav-item .nav-link:hover,
+.my-nav-item-end .nav-link:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+@media (max-width: 992px) {
+  .my-nav-item-start,
+  .my-nav-item,
+  .my-nav-item-end {
+    background-color: #fff;
+    border: 0;
+    margin: 0 calc(-1.5rem * 0.5);
+    text-align: center;
+  }
+
+  .my-nav-item-start .nav-link,
+  .my-nav-item .nav-link,
+  .my-nav-item-end .nav-link {
+    padding: 16px 0;
+  }
+
+  .my-nav-item-start {
+    border-top: 1px solid rgb(150, 150, 150);
+  }
+
+  .my-nav-item-start,
+  .my-nav-item,
+  .my-nav-item-end {
+    border-bottom: 1px solid rgb(150, 150, 150);
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-img {
+    width: 90px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 576px) {
+  .logo-img {
+    width: 75px;
+    height: 50px;
+  }
 }
 </style>
