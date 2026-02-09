@@ -13,7 +13,10 @@
         <div class="row">
           <div class="col-0 col-md-3">
             <div class="sticky-top list-sticky" :class="{ 'list-ani': SideIsShow }">
-              <ul class="my-list-style p-3">
+              <div class="close-btn">
+                <a href="#" @click.prevent="closefilter" title="關閉"><i class="bi bi-x-lg"></i></a>
+              </div>
+              <ul class="my-list-style p-0 p-md-3">
                 <li>
                   <a
                     href="#"
@@ -59,11 +62,11 @@
                 <div class="my-card d-flex flex-column justify-content-between h-100">
                   <div class="w-100">
                     <div class="mycard-img-box overflow-hidden">
-                      <a
-                        href="#"
+                      <RouterLink
+                        :to="{ name: 'single_product', params: { id: item.id } }"
                         class="mycard-img w-100 h-100"
                         :style="{ backgroundImage: `url(${getImage(item.imageUrl)})` }"
-                      ></a>
+                      ></RouterLink>
                     </div>
                     <p class="fs-5 mb-2 text-center">{{ item.title }}</p>
                   </div>
@@ -215,6 +218,14 @@ onMounted(() => {
   padding: 10px 15px;
 }
 
+.close-btn {
+  display: none;
+}
+
+.close-btn a {
+  color: rgb(85, 103, 88);
+}
+
 .blackBG {
   visibility: hidden;
   z-index: 12;
@@ -351,6 +362,12 @@ onMounted(() => {
   }
   .my-list-link {
     padding: 10px 30px;
+  }
+  .close-btn {
+    display: flex;
+    justify-content: end;
+    padding: 10px 10px 4px 10px;
+    font-size: 22px;
   }
 }
 </style>

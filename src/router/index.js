@@ -18,6 +18,12 @@ const router = createRouter({
           component: () => import('../views/user/UserProducts.vue'),
         },
         {
+          path: 'product/:id',
+          name: 'single_product',
+          component: () => import('../views/user/UserSingleProduct.vue'),
+          props: true,
+        },
+        {
           path: 'story',
           component: () => import('../views/user/UserStory.vue'),
         },
