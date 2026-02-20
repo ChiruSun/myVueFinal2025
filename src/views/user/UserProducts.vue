@@ -75,7 +75,21 @@
                     <p class="text-secondary text-decoration-line-through mb-2">
                       NT${{ item.origin_price }}
                     </p>
-                    <button type="button" class="btn btn-dark px-3">加入購物車</button>
+                    <button
+                      type="button"
+                      class="btn btn-dark px-3 position-relative"
+                      :class="{ disabled: btnLoadingId === item.id }"
+                      @click="addCart(item.id)"
+                    >
+                      <!-- 撐位置用 -->
+                      <span class="ghost-btn-text">加入購物車</span>
+                      <!-- 實際元素 -->
+                      <span
+                        class="real-btn-text"
+                        :class="{ 'btn-loader ': btnLoadingId === item.id }"
+                        >{{ btnLoadingId === item.id ? '' : '加入購物車' }}</span
+                      >
+                    </button>
                   </div>
                 </div>
               </div>
@@ -118,6 +132,7 @@
           </div>
         </div>
       </div>
+      <CartAddSucess></CartAddSucess>
       <HomeFooter></HomeFooter>
     </div>
   </div>
@@ -125,11 +140,12 @@
   <SectionLoading v-show="loading" />
 </template>
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 
 import SectionLoading from '@/components/SectionLoading.vue'
+import CartAddSucess from '@/components/user/CartAddSucess.vue'
 import HomeFooter from '@/components/user/HomeFooter.vue'
 
 const APIUrl = import.meta.env.VITE_API_URL
@@ -139,6 +155,7 @@ const productUrl = `${APIUrl}v2/api/${APIPath}/products?page=`
 const showProduct = ref(null)
 const productPageData = ref(null)
 const loading = ref(true)
+const btnLoadingId = ref(null)
 const SideIsShow = ref(false)
 const route = useRoute()
 const router = useRouter()
@@ -149,6 +166,7 @@ const productDefaultImage = '/src/img/NoImage.jpg'
 watch(
   () => [route.query.category, route.query.page],
   ([category, page]) => askProduct(category, page),
+  { immediate: true },
 )
 
 //請求資料
@@ -188,13 +206,16 @@ function closefilter() {
   SideIsShow.value = false
 }
 
-// changePage({ category: 'all' })
-
-onMounted(() => {
-  askProduct()
-})
+function addCart(id) {
+  btnLoadingId.value = id
+}
 </script>
 <style scoped>
+@property --deg {
+  syntax: '<angle>';
+  initial-value: 0deg;
+}
+
 .banner {
   width: 100%;
   aspect-ratio: 1920 / 354;
@@ -317,6 +338,16 @@ onMounted(() => {
   padding: 0 8px;
 }
 
+.ghost-btn-text {
+  visibility: hidden;
+}
+
+.real-btn-text {
+  position: absolute;
+  white-space: nowrap;
+  transform: translate(-100%);
+}
+
 .hover-deco:hover {
   text-decoration: underline;
 }
@@ -330,6 +361,29 @@ onMounted(() => {
 .my-page-disabled {
   color: rgb(207, 207, 207);
   pointer-events: none;
+}
+
+.btn-loader {
+  position: absolute;
+  top: 24%;
+  left: 44%;
+  width: 20px;
+  height: 20px;
+  border: 5px solid #fff;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 992px) {

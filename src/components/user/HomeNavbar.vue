@@ -14,16 +14,20 @@
           :class="{ 'scrolled-logo': isScrolled }"
         />
       </RouterLink>
-      <button
-        class="navbar-toggler my-nav-toggler"
-        type="button"
-        @click="toggleMenu"
-        aria-controls="navbarSupportedContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
+      <div class="d-flex">
+        <button class="shopping-cart-btn cart-before me-3"><i class="bi bi-cart"></i></button>
+        <button
+          class="navbar-toggler my-nav-toggler"
+          type="button"
+          @click="toggleMenu"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+
       <div class="collapse navbar-collapse justify-content-end" :class="{ show: isOpen }">
         <ul class="navbar-nav mb-0">
           <li class="nav-item my-nav-item-start">
@@ -43,17 +47,24 @@
           </li>
         </ul>
       </div>
+      <div class="cart-after">
+        <button class="shopping-cart-btn" @click="switchCart"><i class="bi bi-cart"></i></button>
+        <ShoppingCart v-show="cartIsOpen"></ShoppingCart>
+      </div>
     </div>
   </nav>
 </template>
 <script setup>
 import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
+import ShoppingCart from './ShoppingCart.vue'
 
 const isScrolled = ref(false)
 const isOpen = ref(false)
 
 const route = useRoute()
+
+const cartIsOpen = ref(false)
 
 const handleScroll = () => {
   isScrolled.value = window.scrollY > 0
@@ -70,6 +81,10 @@ watch(
     isOpen.value = false
   },
 )
+
+function switchCart() {
+  cartIsOpen.value = !cartIsOpen.value
+}
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
@@ -156,6 +171,31 @@ onUnmounted(() => {
   .my-nav-item,
   .my-nav-item-end {
     border-bottom: 1px solid rgb(150, 150, 150);
+  }
+}
+
+.shopping-cart-btn {
+  border: 0;
+  font-size: 24px;
+  background-color: rgba(255, 255, 255, 0);
+  padding: 0 20px;
+}
+
+.cart-before {
+  display: none;
+}
+
+.cart-after {
+  display: block;
+}
+
+@media (max-width: 992px) {
+  .cart-before {
+    display: block;
+  }
+
+  .cart-after {
+    display: none;
   }
 }
 
