@@ -33,7 +33,7 @@
             <div>
               <div class="d-flex align-items-baseline">
                 <p>數量({{ productData?.unit }})：</p>
-                <div class="input-group mb-3 me-2 my-quantity-box">
+                <!-- <div class="input-group mb-3 me-2 my-quantity-box">
                   <button class="btn btn-outline-secondary" type="button" @click="decrease">
                     -
                   </button>
@@ -41,24 +41,29 @@
                     type="text"
                     class="form-control text-center"
                     v-model="productQuantity"
-                    @input="limitNumber"
+                    @blur="limitNumber"
                   />
                   <button class="btn btn-outline-secondary" type="button" @click="increase">
                     +
                   </button>
-                </div>
+                </div> -->
+                <ChangeQuantity
+                  class="me-2 my-quantity-box"
+                  v-model="productQuantity"
+                  @input-blur="limitNumber"
+                ></ChangeQuantity>
               </div>
-              <p class="text-danger" v-show="quantityIsZero">數量最低為1</p>
-              <p class="text-danger" v-show="quantityIsOver">數量上限為99</p>
             </div>
 
             <div class="d-flex">
               <button class="btn btn-dark fs-5 px-4 me-2" type="button">立即結帳</button
-              ><button class="btn btn-outline-dark px-4 fs-5" type="button">
+              ><button class="btn btn-outline-dark px-4 fs-5" type="button" @click="addCart()">
                 加入購物車<i class="bi bi-cart-fill ms-2"></i>
               </button>
             </div>
           </div>
+          <p class="text-danger" v-show="quantityIsZero">數量最低為1</p>
+          <p class="text-danger" v-show="quantityIsOver">數量上限為99</p>
         </div>
       </div>
     </div>
@@ -88,7 +93,6 @@
                 <p class="fw-bold me-2 text-danger">NT${{ item.price }}</p>
                 <p class="smaller-money">NT${{ item.origin_price }}</p>
               </div>
-              <!-- <a href="#" class="similar-btn">去看看</a> -->
               <RouterLink
                 :to="{ name: 'single_product', params: { id: item.id } }"
                 class="similar-btn"
@@ -102,6 +106,7 @@
     <p class="text-danger text-center fs-5 mb-5">※注意：此為網頁練習作品，商品不存在，為捏造內容</p>
     <HomeFooter></HomeFooter>
   </div>
+  <CartAddSucess v-if="addCartSucessIsShow" @suceess-close="suceessClose"></CartAddSucess>
   <SectionLoading v-show="loading" />
 </template>
 <script setup>
@@ -111,9 +116,13 @@ import axios from 'axios'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 // Import Swiper styles
 import 'swiper/css'
+import { useCartStore } from '@/stores/cartStore'
+import emitter from '@/emitter'
 
 import SectionLoading from '@/components/SectionLoading.vue'
 import HomeFooter from '@/components/user/HomeFooter.vue'
+import CartAddSucess from '@/components/user/CartAddSucess.vue'
+import ChangeQuantity from '@/components/user/ChangeQuantity.vue'
 
 const APIUrl = import.meta.env.VITE_API_URL
 const APIPath = import.meta.env.VITE_API_PATH
@@ -121,11 +130,13 @@ const { id } = defineProps({
   id: String,
 })
 const router = useRouter()
+const cartStore = useCartStore()
 
 const productData = ref(null)
 const loading = ref(false)
 const similarProducts = ref(null)
 const showsimilarProducts = ref(null)
+const addCartSucessIsShow = ref(false)
 //商品數量
 const productQuantity = ref(1)
 const quantityIsZero = ref(false)
@@ -133,26 +144,30 @@ const quantityIsOver = ref(false)
 
 watch(
   () => id,
-  (newId) => {
+  () => {
     getSingleProduct()
   },
 )
 
+//取得商品
 async function getSingleProduct() {
   let nowCategory
   loading.value = true
-  const resp = await axios.get(`${APIUrl}v2/api/${APIPath}/product/${id}`)
-  productData.value = resp.data.product
-  nowCategory = productData.value.category
-
-  const similarResp = await axios.get(`${APIUrl}v2/api/${APIPath}/products?category=${nowCategory}`)
-  similarProducts.value = similarResp.data.products
-  arrangeProduct()
-  loading.value = false
-  console.log('單一商品回傳', productData.value)
-  console.log(similarProducts.value)
-
-  console.log('相似類型商品顯示', showsimilarProducts.value)
+  try {
+    const resp = await axios.get(`${APIUrl}v2/api/${APIPath}/product/${id}`)
+    productData.value = resp.data.product
+    nowCategory = productData.value.category
+    const similarResp = await axios.get(
+      `${APIUrl}v2/api/${APIPath}/products?category=${nowCategory}`,
+    )
+    similarProducts.value = similarResp.data.products
+  } catch (error) {
+    console.error(error)
+    router.push('/no_this_product')
+  } finally {
+    arrangeProduct()
+    loading.value = false
+  }
 }
 
 //類似商品
@@ -167,18 +182,8 @@ function arrangeProduct() {
 }
 
 //數字輸入
-function limitNumber(e) {
-  productQuantity.value = normalize(e.target.value)
-}
-
-//數字增加
-function increase() {
-  productQuantity.value = normalize(Number(productQuantity.value) + 1)
-}
-
-//數字減少
-function decrease() {
-  productQuantity.value = normalize(Number(productQuantity.value) - 1)
+function limitNumber() {
+  productQuantity.value = normalize(productQuantity.value)
 }
 
 //商品數量變化整合
@@ -188,21 +193,22 @@ function normalize(val) {
   quantityIsZero.value = false
   quantityIsOver.value = false
   // 空值處理
-  if (val === '') return '1'
+  if (val === '') return 1
   //下限 1
   if (val === '0') {
     quantityIsZero.value = true
-    return '1'
+    return 1
   }
   //上限 99
   if (Number(val) > 99) {
     quantityIsOver.value = true
-    return '99'
+    return 99
   }
 
-  return val
+  return Number(val)
 }
 
+//麵包屑導向(種類)
 function goCategory() {
   router.push({
     path: '/products',
@@ -212,10 +218,35 @@ function goCategory() {
   })
 }
 
+//麵包屑導向(首頁)
 function goHome() {
   router.push({
     path: '/',
   })
+}
+
+async function addCart() {
+  const qty = Number(productQuantity.value)
+  loading.value = true
+  await cartStore.addCart(productData.value.id, qty)
+  if (cartStore.isAddCartSuccess) {
+    addCartSucessIsShow.value = true
+  } else {
+    emitter.emit('toast', {
+      message: '新增購物車失敗',
+      type: 'danger',
+    })
+  }
+  loading.value = false
+  productQuantity.value = 1
+  cartStore.isAddCartSuccess = false
+}
+
+async function suceessClose() {
+  addCartSucessIsShow.value = false
+  loading.value = true
+  await cartStore.getCart()
+  loading.value = false
 }
 
 getSingleProduct()

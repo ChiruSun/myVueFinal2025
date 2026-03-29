@@ -15,14 +15,13 @@ const router = useRouter()
 //驗證token
 async function verify() {
   try {
-    const resp = await verifyLogin()
-    // console.log('進入dash驗證通過', resp)
+    await verifyLogin()
   } catch (error) {
     emitter.emit('toast', {
       message: error.response.data.message,
       type: 'danger',
     })
-    console.log(error)
+    console.error(error)
     router.push('/login')
   }
 }

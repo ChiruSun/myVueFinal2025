@@ -132,7 +132,7 @@
           </div>
         </div>
       </div>
-      <CartAddSucess></CartAddSucess>
+      <CartAddSucess v-if="addCartSucessIsShow" @suceess-close="suceessClose"></CartAddSucess>
       <HomeFooter></HomeFooter>
     </div>
   </div>
@@ -143,10 +143,13 @@
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
+import emitter from '@/emitter'
 
 import SectionLoading from '@/components/SectionLoading.vue'
 import CartAddSucess from '@/components/user/CartAddSucess.vue'
 import HomeFooter from '@/components/user/HomeFooter.vue'
+
+import { useCartStore } from '@/stores/cartStore'
 
 const APIUrl = import.meta.env.VITE_API_URL
 const APIPath = import.meta.env.VITE_API_PATH
@@ -157,8 +160,10 @@ const productPageData = ref(null)
 const loading = ref(true)
 const btnLoadingId = ref(null)
 const SideIsShow = ref(false)
+const addCartSucessIsShow = ref(false)
 const route = useRoute()
 const router = useRouter()
+const cartStore = useCartStore()
 
 const productDefaultImage = '/src/img/NoImage.jpg'
 
@@ -206,8 +211,26 @@ function closefilter() {
   SideIsShow.value = false
 }
 
-function addCart(id) {
+async function addCart(id) {
   btnLoadingId.value = id
+  await cartStore.addCart(id)
+  if (cartStore.isAddCartSuccess) {
+    addCartSucessIsShow.value = true
+  } else {
+    emitter.emit('toast', {
+      message: '新增購物車失敗',
+      type: 'danger',
+    })
+  }
+  btnLoadingId.value = null
+  cartStore.isAddCartSuccess = false
+}
+
+async function suceessClose() {
+  addCartSucessIsShow.value = false
+  loading.value = true
+  await cartStore.getCart()
+  loading.value = false
 }
 </script>
 <style scoped>
@@ -264,6 +287,7 @@ function addCart(id) {
 
 .list-sticky {
   top: 100px;
+  z-index: 5;
 }
 
 .my-list-style {
@@ -404,12 +428,12 @@ function addCart(id) {
   .list-sticky {
     background-color: white;
     position: fixed;
-    z-index: 13;
     top: 0;
     left: -200px;
     bottom: 0;
     padding: 0 10px;
     transition: left 0.2s;
+    z-index: 13;
   }
   .list-ani {
     left: 0px;

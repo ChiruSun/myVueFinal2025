@@ -3,7 +3,9 @@
     <p class="h1 fw-bold text-center mb-2 mb-sm-4">心動商品</p>
     <swiper v-bind="swiperOptions" @swiper="onSwiperInit" class="pt-3">
       <swiper-slide v-for="i in cardData" :key="i.id" class="my-card-out">
-        <a :href="i.link" class="text-decoration-none"
+        <RouterLink
+          :to="{ name: 'single_product', params: { id: i.product_id } }"
+          class="text-decoration-none"
           ><div class="card rounded-4 my-card" :style="{ '--item-bg-img': `url(${i.bgImgUrl})` }">
             <div class="card-body rounded-4 mycard-bg">
               <div class="d-flex justify-content-center">
@@ -44,7 +46,7 @@
                 </div>
               </div>
             </div></div
-        ></a>
+        ></RouterLink>
       </swiper-slide>
     </swiper>
     <div class="container d-none d-sm-flex justify-content-end mt-4">
@@ -80,6 +82,7 @@ const cardData = ref([
     imgUrl: '/src/img/can_lavender.png',
     bgImgUrl: '/src/img/bgImg_lavender.jpg',
     link: 'https://tw.yahoo.com/',
+    product_id: '-OhhAhsOYec7CZb_88J1',
   },
   {
     title: '菊花',
@@ -89,6 +92,7 @@ const cardData = ref([
     imgUrl: '/src/img/can_chrysanthemum.png',
     bgImgUrl: '/src/img/bgImg_chrysanthemum.jpg',
     link: 'https://tw.yahoo.com/',
+    product_id: '-OhhBLpr-zJBQqq55WDd',
   },
   {
     title: '蘆薈',
@@ -98,6 +102,7 @@ const cardData = ref([
     imgUrl: '/src/img/can_aloe_vera.png',
     bgImgUrl: '/src/img/bgImg_aloe_vera.jpg',
     link: 'https://tw.yahoo.com/',
+    product_id: '-OhhB1ZgN7B-9dRoDqjD',
   },
   {
     title: '蜂王乳',
@@ -107,6 +112,7 @@ const cardData = ref([
     imgUrl: '/src/img/can_bee.png',
     bgImgUrl: '/src/img/bgImg_bee.jpg',
     link: 'https://tw.yahoo.com/',
+    product_id: '-OhhBb2Hz5dYIqI8czeO',
   },
   {
     title: '薄荷清香',
@@ -116,6 +122,7 @@ const cardData = ref([
     imgUrl: '/src/img/can_mint.png',
     bgImgUrl: '/src/img/bgImg_mint.jpg',
     link: 'https://tw.yahoo.com/',
+    product_id: '-OhhBi4Xam485DFqcyeZ',
   },
   {
     title: '百合',
@@ -125,6 +132,7 @@ const cardData = ref([
     imgUrl: '/src/img/can_lily.png',
     bgImgUrl: '/src/img/bgImg_lily.jpg',
     link: 'https://tw.yahoo.com/',
+    product_id: '-OhhAs3BF2Gx3oNoy9aT',
   },
   {
     title: '玫瑰',
@@ -134,6 +142,7 @@ const cardData = ref([
     imgUrl: '/src/img/can_rose.png',
     bgImgUrl: '/src/img/bgImg_rose.jpg',
     link: 'https://tw.yahoo.com/',
+    product_id: '-OhhBDcazwtZiEJtgcQU',
   },
 ])
 

@@ -5,6 +5,7 @@
         <div>
           <Navbar class="my-nav-ani"></Navbar>
           <router-view></router-view>
+          <SectionLoading v-show="useLoding.isLoading"></SectionLoading>
         </div>
         <template #fallback>
           <div>
@@ -18,6 +19,11 @@
 <script setup>
 import HomeLoading from '@/components/user/HomeLoading.vue'
 import Navbar from '@/components/user/HomeNavbar.vue'
+import SectionLoading from '@/components/SectionLoading.vue'
+
+import { useLoadingStore } from '@/stores/loadingStore'
+
+const useLoding = useLoadingStore()
 </script>
 <style scoped>
 .mybg {

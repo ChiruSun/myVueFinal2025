@@ -7,7 +7,8 @@
 .loading-w-bg {
   background-color: white;
   opacity: 0.5;
-  position: absolute;
+  /* position: absolute; */
+  position: fixed;
   inset: 0;
   display: flex;
   align-items: center;

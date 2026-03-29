@@ -15,7 +15,19 @@
         />
       </RouterLink>
       <div class="d-flex">
-        <button class="shopping-cart-btn cart-before me-3"><i class="bi bi-cart"></i></button>
+        <div class="cart-before">
+          <button class="shopping-cart-btn position-relative" @click="switchCart">
+            <i class="bi bi-cart"></i>
+            <span
+              class="my-notify position-absolute translate-middle badge rounded-pill"
+              v-if="cartStore.hasCart"
+            >
+              {{ cartItemQty }}
+              <span class="visually-hidden">unread messages</span>
+            </span>
+          </button>
+          <SlimShoppingCart v-show="isCartOpen" @click-outside="switchCart"></SlimShoppingCart>
+        </div>
         <button
           class="navbar-toggler my-nav-toggler"
           type="button"
@@ -48,23 +60,36 @@
         </ul>
       </div>
       <div class="cart-after">
-        <button class="shopping-cart-btn" @click="switchCart"><i class="bi bi-cart"></i></button>
-        <ShoppingCart v-show="cartIsOpen"></ShoppingCart>
+        <button class="shopping-cart-btn position-relative" @click="switchCart">
+          <i class="bi bi-cart"></i>
+          <span
+            class="my-notify position-absolute translate-middle badge rounded-pill"
+            v-if="cartStore.hasCart"
+          >
+            {{ cartItemQty }}
+            <span class="visually-hidden">unread messages</span>
+          </span>
+        </button>
+        <SlimShoppingCart v-show="isCartOpen" @click-outside="switchCart"></SlimShoppingCart>
       </div>
     </div>
   </nav>
 </template>
 <script setup>
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
-import ShoppingCart from './ShoppingCart.vue'
+import SlimShoppingCart from './SlimShoppingCart.vue'
+import { useCartStore } from '@/stores/cartStore'
+
+const route = useRoute()
+const cartStore = useCartStore()
 
 const isScrolled = ref(false)
 const isOpen = ref(false)
-
-const route = useRoute()
-
-const cartIsOpen = ref(false)
+const isCartOpen = ref(false)
+const cartItemQty = computed(() => {
+  return cartStore.cartItems.length
+})
 
 const handleScroll = () => {
   isScrolled.value = window.scrollY > 0
@@ -79,15 +104,17 @@ watch(
   () => route.fullPath,
   () => {
     isOpen.value = false
+    isCartOpen.value = false
   },
 )
 
 function switchCart() {
-  cartIsOpen.value = !cartIsOpen.value
+  isCartOpen.value = !isCartOpen.value
 }
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
+  cartStore.getCart()
 })
 
 onUnmounted(() => {
@@ -145,6 +172,13 @@ onUnmounted(() => {
 .my-nav-item-end .nav-link:hover {
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
+}
+
+.my-notify {
+  font-size: 14px;
+  top: 10%;
+  left: 80%;
+  background-color: rgb(222, 68, 12);
 }
 
 @media (max-width: 992px) {

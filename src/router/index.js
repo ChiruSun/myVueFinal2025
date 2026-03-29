@@ -24,12 +24,21 @@ const router = createRouter({
           props: true,
         },
         {
+          path: 'no_this_product',
+          component: () => import('../views/user/UserNoThisProduct.vue'),
+        },
+        {
           path: 'story',
           component: () => import('../views/user/UserStory.vue'),
         },
         {
           path: 'connect_us',
           component: () => import('../views/user/UserContentUs.vue'),
+        },
+        {
+          path: 'shopping_cart',
+          name: 'cart',
+          component: () => import('../views/user/UserCartView.vue'),
         },
         {
           path: 'test',
