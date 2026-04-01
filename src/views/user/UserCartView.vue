@@ -136,6 +136,7 @@ async function getCart() {
 
 async function getCoupon() {
   console.log('使用了優惠劵')
+  couponResp.value = null
   btnloading.value = true
   const resp = await axios.post(`${APIUrl}/v2/api/${APIPath}/coupon`, {
     data: { code: couponCode.value },
