@@ -56,8 +56,11 @@
                 <p>-NT${{ useCart.cartDiscount }}</p>
               </div>
               <div v-if="useCart.hasCoupon">
-                <p>{{ useCart.cartItems[0]?.coupon }}</p>
-                <p>有優惠劵</p>
+                <p class="coupon-text">
+                  已套用優惠：{{ useCart.cartItems[0]?.coupon.title }}，{{
+                    useCart.cartItems[0]?.coupon.percent
+                  }}折
+                </p>
               </div>
               <div class="d-flex justify-content-between align-items-baseline pt-3">
                 <p class="text-secondary">總計</p>
@@ -67,7 +70,7 @@
               </div>
               <div>
                 <p>使用優惠卷</p>
-                <div class="input-group mb-2">
+                <div class="input-group mb-3">
                   <input
                     type="text"
                     v-model="couponCode"
@@ -100,7 +103,43 @@
                     {{ couponResp?.message }}
                   </p>
                 </div>
-                <button type="button" class="btn btn-danger w-100" :disabled="!useCart.hasCart">
+                <div>
+                  <p class="fw-bold">基本資料</p>
+                  <div class="mb-3">
+                    <label>姓名</label>
+                    <input v-model="userForm.name" class="form-control" />
+                  </div>
+
+                  <div class="mb-3">
+                    <label>Email</label>
+                    <input v-model="userForm.email" class="form-control" />
+                  </div>
+
+                  <div class="mb-3">
+                    <label>電話</label>
+                    <input v-model="userForm.tel" class="form-control" />
+                  </div>
+                  <div class="mb-3">
+                    <label>地址</label>
+                    <input v-model="userForm.address" class="form-control" />
+                  </div>
+                  <div class="mb-3">
+                    <label>給店家的訊息</label>
+                    <textarea
+                      name="content"
+                      v-model="message"
+                      class="form-control"
+                      cols="30"
+                      rows="3"
+                    ></textarea>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-danger w-100"
+                  @click.prevent="goCheckOut"
+                  :disabled="!useCart.hasCart"
+                >
                   結帳
                 </button>
               </div>
@@ -114,6 +153,7 @@
 </template>
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import axios from 'axios'
 
 import HomeFooter from '@/components/user/HomeFooter.vue'
@@ -129,6 +169,15 @@ const APIPath = import.meta.env.VITE_API_PATH
 const btnloading = ref(false)
 const couponCode = ref('')
 const couponResp = ref(null)
+const userForm = ref({
+  name: '',
+  tel: '',
+  email: '',
+  address: '',
+})
+const message = ref('')
+
+const router = useRouter()
 
 async function getCart() {
   await useLoding.withLoading(useCart.getCart)
@@ -158,6 +207,10 @@ async function changeQty(id, qty) {
   await useLoding.withLoading(() => useCart.getCart())
 }
 
+function goCheckOut() {
+  router.push({ name: 'checkout' })
+}
+
 getCart()
 </script>
 <style scoped>
@@ -181,5 +234,9 @@ getCart()
 
 .product-qty {
   width: 120px;
+}
+
+.coupon-text {
+  color: rgb(210, 95, 0);
 }
 </style>

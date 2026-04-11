@@ -12,6 +12,18 @@ const dashAxios = axios.create({
   },
 })
 
+//攔截器更新token
+dashAxios.interceptors.request.use((config) => {
+  console.log('這是攔截器的config', config)
+  const newToken = document.cookie.replace(
+    /(?:(?:^|.*;\s*)hexVueCookie\s*\=\s*([^;]*).*$)|^.*$/,
+    '$1',
+  )
+  config.headers.Authorization = newToken
+
+  return config
+})
+
 //進dash驗證
 function verifyLogin() {
   return dashAxios.post(`${APIUrl}v2/api/user/check`)

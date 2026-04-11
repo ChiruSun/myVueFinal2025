@@ -24,7 +24,6 @@ export const useCartStore = defineStore('cart', () => {
       cartItems.value = resp.data.data.carts
       cartTotal.value = resp.data.data.total
       cartFinalTotal.value = Math.trunc(resp.data.data.final_total)
-      console.log('購物車商品', cartItems.value)
     } catch (error) {
       console.log('請求購物車資料時發生錯誤', error)
     }
