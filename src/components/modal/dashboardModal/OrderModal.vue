@@ -71,7 +71,7 @@
               }}</span>
             </p>
             <p>
-              總計<span class="price_t">{{ data?.total }}</span
+              總計<span class="price_t project-arial-font fw-bold">{{ data?.total }}</span
               >元
             </p>
           </div>
@@ -104,8 +104,6 @@ defineExpose({
 </script>
 <style scoped>
 .price_t {
-  font-family: arial;
-  font-weight: bold;
   font-size: 32px;
   color: #ff2d2d;
   padding: 0px 4px;

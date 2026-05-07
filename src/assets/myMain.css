@@ -1,2 +1,22 @@
 /* google字型 */
 @import url('https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;500;600;700;900&display=swap');
+
+.project-main-font {
+  font-family: 'Zen Old Mincho', serif;
+}
+
+.project-arial-font {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.project-main-color {
+  color: rgb(63, 93, 63);
+}
+
+.project-main-color-black {
+  color: rgb(61, 61, 61);
+}
+
+.fw-900 {
+  font-weight: 900;
+}

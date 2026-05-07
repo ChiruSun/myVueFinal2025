@@ -4,7 +4,9 @@
       <div class="d-flex justify-content-center mb-4">
         <checkSuccessAnimation></checkSuccessAnimation>
       </div>
-      <p class="fs-5 mb-0">已加入購物車</p>
+      <div>
+        <slot><p class="fs-5 mb-0">已加入購物車</p></slot>
+      </div>
     </div>
   </div>
 </template>

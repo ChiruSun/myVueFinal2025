@@ -1,141 +1,127 @@
 <template>
   <div class="all-page mb-5">
     <div class="container py-4">
-      <h2 class="mb-4 title">結帳</h2>
-
+      <h2 class="mb-4 project-main-font fw-bold">結帳</h2>
+      <p class="text-secondary">訂單建立時間：{{ orderCreateTime }}</p>
       <!-- 商品列表 -->
       <div class="card mb-4">
         <div class="card-header">商品資料</div>
         <div class="card-body">
-          <div
-            v-for="item in useCart.cartItems"
-            :key="item.id"
-            class="d-flex justify-content-between align-items-center mb-3"
-          >
-            <div>
-              <p>{{ item }}</p>
+          <div v-for="(item, key, index) in orderData?.products" :key="item.id">
+            <div class="d-flex py-2" :class="{ 'border-top': index !== 0 }">
+              <div class="productImg me-2">
+                <img :src="item.product.imageUrl" class="img-fluid" alt="" />
+              </div>
+              <div>
+                <p class="fs-4 fw-bold mb-2">{{ item.product.content }}</p>
+                <p class="mb-2">數量：{{ item.qty }}</p>
+                <p class="mb-0">價格：{{ getInteger(item.final_total) }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col-6">
+          <div class="card h-100">
+            <div class="card-header">金額摘要</div>
+            <div class="card-body">
+              <div class="d-flex justify-content-between">
+                <span>總金額</span>
+                <strong>{{ orderData?.total }}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="card">
+            <div class="card-header">個人資訊</div>
+            <div class="card-body">
+              <div class="d-flex justify-content-between">
+                <span>姓名</span>
+                <strong>{{ orderData?.user?.name }}</strong>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span>e-mail</span>
+                <strong>{{ orderData?.user?.email }}</strong>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span>電話</span>
+                <strong>{{ orderData?.user?.tel }}</strong>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span>地址</span>
+                <strong>{{ orderData?.user?.address }}</strong>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 訂單摘要 -->
-      <div class="card mb-4">
-        <div class="card-header">金額摘要</div>
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <span>商品總數</span>
-            <span>{{ totalQty }}</span>
-          </div>
-
-          <div class="d-flex justify-content-between">
-            <span>總金額</span>
-            <strong>${{ totalPrice }}</strong>
-          </div>
-        </div>
-      </div>
-
-      <!-- 基本資料 -->
-      <div class="card mb-4">
-        <div class="card-header">基本資料</div>
-
-        <div class="card-body">
-          <div class="mb-3">
-            <label>姓名</label>
-            <input v-model="form.name" class="form-control" />
-          </div>
-
-          <div class="mb-3">
-            <label>Email</label>
-            <input v-model="form.email" class="form-control" />
-          </div>
-
-          <div class="mb-3">
-            <label>地址</label>
-            <input v-model="form.address" class="form-control" />
-          </div>
-        </div>
-      </div>
-
       <!-- 送出 -->
-      <button class="btn btn-primary w-100" :disabled="!isValid" @click="submitOrder">
-        送出訂單
-      </button>
+      <button type="button" class="btn btn-primary w-100" @click="compilePay">完成付款</button>
     </div>
   </div>
+  <HomeFooter></HomeFooter>
 </template>
 <script setup>
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import axios from 'axios'
+import HomeFooter from '@/components/user/HomeFooter.vue'
+import { useLoadingStore } from '@/stores/loadingStore'
 
-import { useCartStore } from '@/stores/cartStore'
+const route = useRoute()
+const router = useRouter()
+const useloading = useLoadingStore()
 
-const useCart = useCartStore()
-const cart = ref([
-  { id: 1, title: 'Vue 課程', price: 1200, qty: 1 },
-  { id: 2, title: 'JavaScript 書籍', price: 800, qty: 2 },
-])
+const APIUrl = import.meta.env.VITE_API_URL
+const APIPath = import.meta.env.VITE_API_PATH
 
-/* -------------------------
-   數量控制
-------------------------- */
+const orderData = ref('')
+const orderCreateTime = computed(() => {
+  return new Date(orderData.value.create_at * 1000).toLocaleString('zh-TW')
+})
+// const total = computed(()=>{})
 
-const increase = (item) => {
-  item.qty++
+async function getOrder() {
+  const id = route.params.id
+  useloading.showLoading()
+  const resp = await axios.get(`${APIUrl}/v2/api/${APIPath}/order/${id}`)
+  orderData.value = resp.data.order
+  console.log('訂單資料', orderData.value)
+
+  useloading.hideLoading()
 }
 
-const decrease = (item) => {
-  if (item.qty > 1) item.qty--
+//取整數
+function getInteger(val) {
+  if (val == null) return ''
+  return Math.floor(val)
 }
 
-/* -------------------------
-   computed 金額計算
-------------------------- */
-
-const totalQty = computed(() => cart.value.reduce((sum, item) => sum + item.qty, 0))
-
-const totalPrice = computed(() => cart.value.reduce((sum, item) => sum + item.price * item.qty, 0))
-
-/* -------------------------
-   表單資料
-------------------------- */
-
-const form = ref({
-  name: '',
-  email: '',
-  address: '',
-})
-
-/* -------------------------
-   表單驗證
-------------------------- */
-
-const isValid = computed(() => {
-  return form.value.name && form.value.email && form.value.address && totalQty.value > 0
-})
-
-/* -------------------------
-   送出訂單
-------------------------- */
-
-const submitOrder = () => {
-  const order = {
-    customer: form.value,
-    items: cart.value,
-    total: totalPrice.value,
+async function compilePay() {
+  const id = route.params.id
+  useloading.showLoading()
+  try {
+    await axios.post(`${APIUrl}/v2/api/${APIPath}/pay/${id}`)
+    router.push({ name: 'back_home' })
+  } catch (error) {
+    console.error('結帳錯誤', error)
+  } finally {
+    useloading.hideLoading()
   }
-
-  console.log('送出訂單:', order)
-
-  alert('訂單送出成功！')
 }
+
+getOrder()
 </script>
 <style scoped>
 .all-page {
   padding-top: 130px;
 }
 
-.title {
-  font-family: 'Zen Old Mincho', serif;
-  font-weight: bold;
+.productImg {
+  width: 100px;
+  height: 100px;
 }
 </style>

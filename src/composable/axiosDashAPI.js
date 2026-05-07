@@ -1,5 +1,4 @@
 import axios from 'axios'
-let token = document.cookie.replace(/(?:(?:^|.*;\s*)hexVueCookie\s*\=\s*([^;]*).*$)|^.*$/, '$1')
 const APIUrl = import.meta.env.VITE_API_URL
 const APIPath = import.meta.env.VITE_API_PATH
 //簡化網址
@@ -7,9 +6,6 @@ const DashPath = `${APIUrl}v2/api/${APIPath}/admin`
 
 const dashAxios = axios.create({
   baseURL: DashPath,
-  headers: {
-    Authorization: token ? token : '',
-  },
 })
 
 //攔截器更新token

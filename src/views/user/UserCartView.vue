@@ -1,49 +1,96 @@
 <template>
   <div class="all-page mb-5">
     <div class="container">
-      <h1 class="title mb-4">購物車</h1>
+      <h1 class="project-main-font project-main-color-black fw-bold mb-4">購物車</h1>
       <div class="row">
-        <div class="col-8">
-          <div v-for="item in useCart.cartItems" v-show="useCart.hasCart" :key="item.id">
-            <div class="d-flex justify-content-between py-4 border-bottom border-secondary-subtle">
-              <div class="d-flex">
-                <div class="d-flex align-items-center me-4">
-                  <a
-                    href="#"
-                    class="fs-5 fw-bold text-secondary"
-                    title="刪除商品"
-                    @click="DeleteProduct(item.id)"
-                    ><i class="bi bi-x-lg"></i
-                  ></a>
+        <div class="col-12 col-md-8">
+          <div v-show="useCart.hasCart">
+            <div v-for="item in useCart.cartItems" :key="item.id">
+              <div
+                class="d-flex flex-column flex-sm-row py-4 border-bottom border-secondary-subtle"
+              >
+                <div class="d-flex flex-column flex-sm-row">
+                  <div
+                    class="d-flex justify-content-end align-items-center me-0 mb-2 me-sm-4 mb-sm-0"
+                  >
+                    <a
+                      href="#"
+                      class="fs-5 fw-bold text-secondary"
+                      title="刪除商品"
+                      @click.prevent="openDelModal(item)"
+                      ><i class="bi bi-x-lg"></i
+                    ></a>
+                  </div>
+                  <div class="d-flex justify-content-center me-0 mb-3 me-sm-4 mb-sm-0">
+                    <div class="img-box rounded-3 overflow-hidden">
+                      <img
+                        class="img-fluid"
+                        :src="item.product.imageUrl"
+                        :alt="item.product.content"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div class="img-box rounded-3 overflow-hidden me-4">
-                  <img class="img-fluid" :src="item.product.imageUrl" :alt="item.product.content" />
-                </div>
-                <div class="d-flex flex-column justify-content-between">
+                <div class="w-100">
                   <div>
                     <p class="fs-5">{{ item.product.title }}</p>
                     <p class="text-secondary">{{ item.product.content }}</p>
+                    <div v-if="item?.coupon">
+                      <p class="coupon-text">
+                        已套用優惠：{{ item?.coupon.title }}，{{ item?.coupon.percent }}折
+                      </p>
+                    </div>
                   </div>
-                  <p class="fs-4 fw-bold text-danger mb-0">NT${{ item.total }}</p>
-                </div>
-              </div>
-              <div class="d-flex align-items-end">
-                <div class="d-flex align-items-baseline">
-                  <p class="me-2 mb-0">數量：</p>
-                  <div class="product-qty">
-                    <ChangeQuantity
-                      :input-disabled="true"
-                      :model-value="item.qty"
-                      @api-change-qty="changeQty(item.id, $event)"
-                    ></ChangeQuantity>
+                  <div class="d-flex justify-content-between flex-wrap">
+                    <div class="mb-3 mb-xl-0">
+                      <div v-if="!item?.coupon">
+                        <p class="fw-bold text-danger mb-0 project-arial-font">
+                          NT$ <span class="fs-3">{{ item.total }}</span>
+                        </p>
+                      </div>
+                      <div v-if="item?.coupon">
+                        <div class="d-flex align-items-baseline">
+                          <p class="text-secondary text-decoration-line-through me-2 mb-0">
+                            NT${{ item.total }}
+                          </p>
+                          <p class="text-danger mb-0">
+                            折扣後
+                            <span class="fw-bold project-arial-font">
+                              NT$<span class="fs-3">{{ getInteger(item.final_total) }}</span></span
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end align-items-baseline w-100">
+                      <p class="me-2 mb-0">數量：</p>
+                      <div class="product-qty">
+                        <ChangeQuantity
+                          :input-disabled="true"
+                          :model-value="item.qty"
+                          @api-change-qty="changeQty(item.id, $event)"
+                        ></ChangeQuantity>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+            <div class="py-3">
+              <button
+                type="button"
+                class="btn btn-outline-secondary w-100"
+                @click="openDelModal('all')"
+              >
+                刪除全部購物車
+              </button>
+            </div>
           </div>
-          <div v-show="!useCart.hasCart" class="fs-5">購物車目前無商品</div>
+
+          <div v-show="!useCart.hasCart" class="fs-5 mb-4">購物車目前無商品</div>
         </div>
-        <div class="col-4">
+        <div class="col-12 col-md-4">
           <div class="bg-white h-100 rounded-2">
             <div class="p-4">
               <p class="fs-4 mb-0 pb-3 border-bottom border-dark-subtle">小計明細</p>
@@ -53,24 +100,17 @@
               </div>
               <div class="d-flex justify-content-between pt-3">
                 <p class="text-secondary">折扣金額</p>
-                <p>-NT${{ useCart.cartDiscount }}</p>
-              </div>
-              <div v-if="useCart.hasCoupon">
-                <p class="coupon-text">
-                  已套用優惠：{{ useCart.cartItems[0]?.coupon.title }}，{{
-                    useCart.cartItems[0]?.coupon.percent
-                  }}折
-                </p>
+                <p>-NT${{ useCart.discountPrice }}</p>
               </div>
               <div class="d-flex justify-content-between align-items-baseline pt-3">
                 <p class="text-secondary">總計</p>
-                <p class="text-danger fw-bold">
-                  NT$ <span class="fs-3">{{ useCart.cartFinalTotal }}</span>
+                <p class="text-danger fw-bold project-arial-font">
+                  NT$ <span class="fs-3">{{ useCart.discountTotal }}</span>
                 </p>
               </div>
               <div>
                 <p>使用優惠卷</p>
-                <div class="input-group mb-3">
+                <div class="input-group mb-1">
                   <input
                     type="text"
                     v-model="couponCode"
@@ -105,43 +145,40 @@
                 </div>
                 <div>
                   <p class="fw-bold">基本資料</p>
-                  <div class="mb-3">
-                    <label>姓名</label>
-                    <input v-model="userForm.name" class="form-control" />
-                  </div>
+                  <form @submit.prevent="goCheckOut">
+                    <div class="mb-3">
+                      <label>姓名*</label>
+                      <input v-model="userForm.user.name" class="form-control" required />
+                    </div>
 
-                  <div class="mb-3">
-                    <label>Email</label>
-                    <input v-model="userForm.email" class="form-control" />
-                  </div>
+                    <div class="mb-3">
+                      <label>Email*</label>
+                      <input v-model="userForm.user.email" class="form-control" required />
+                    </div>
 
-                  <div class="mb-3">
-                    <label>電話</label>
-                    <input v-model="userForm.tel" class="form-control" />
-                  </div>
-                  <div class="mb-3">
-                    <label>地址</label>
-                    <input v-model="userForm.address" class="form-control" />
-                  </div>
-                  <div class="mb-3">
-                    <label>給店家的訊息</label>
-                    <textarea
-                      name="content"
-                      v-model="message"
-                      class="form-control"
-                      cols="30"
-                      rows="3"
-                    ></textarea>
-                  </div>
+                    <div class="mb-3">
+                      <label>電話*</label>
+                      <input v-model="userForm.user.tel" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                      <label>地址*</label>
+                      <input v-model="userForm.user.address" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                      <label>給店家的訊息</label>
+                      <textarea
+                        name="content"
+                        v-model="userForm.message"
+                        class="form-control"
+                        cols="30"
+                        rows="3"
+                      ></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-danger w-100" :disabled="!useCart.hasCart">
+                      結帳
+                    </button>
+                  </form>
                 </div>
-                <button
-                  type="button"
-                  class="btn btn-danger w-100"
-                  @click.prevent="goCheckOut"
-                  :disabled="!useCart.hasCart"
-                >
-                  結帳
-                </button>
               </div>
             </div>
           </div>
@@ -149,6 +186,10 @@
       </div>
     </div>
   </div>
+  <DeleteModal ref="delModal" :product-data="modalData" @emit-del="DeleteProduct"></DeleteModal>
+  <CartAddSuccess v-if="isChecked" @suceess-close="suceessClose"
+    >已建立訂單，即將進入結帳頁面</CartAddSuccess
+  >
   <HomeFooter></HomeFooter>
 </template>
 <script setup>
@@ -158,10 +199,13 @@ import axios from 'axios'
 
 import HomeFooter from '@/components/user/HomeFooter.vue'
 import ChangeQuantity from '@/components/user/ChangeQuantity.vue'
+import DeleteModal from '@/components/modal/user/DeleteProductModal.vue'
+import CartAddSuccess from '@/components/user/CartAddSuccess.vue'
 import { useCartStore } from '@/stores/cartStore'
 import { useLoadingStore } from '@/stores/loadingStore'
 const useCart = useCartStore()
 const useLoding = useLoadingStore()
+const router = useRouter()
 
 const APIUrl = import.meta.env.VITE_API_URL
 const APIPath = import.meta.env.VITE_API_PATH
@@ -170,14 +214,13 @@ const btnloading = ref(false)
 const couponCode = ref('')
 const couponResp = ref(null)
 const userForm = ref({
-  name: '',
-  tel: '',
-  email: '',
-  address: '',
+  user: { name: '', tel: '', email: '', address: '' },
+  message: '',
 })
-const message = ref('')
-
-const router = useRouter()
+const delModal = ref(null)
+const modalData = ref(null)
+const isChecked = ref(false)
+const orderId = ref('')
 
 async function getCart() {
   await useLoding.withLoading(useCart.getCart)
@@ -197,9 +240,28 @@ async function getCoupon() {
   getCart()
 }
 
+function openDelModal(product) {
+  if (product === 'all') {
+    modalData.value = { id: 'all' }
+  } else {
+    modalData.value = { ...product }
+  }
+
+  delModal.value.showModal()
+}
+
 async function DeleteProduct(id) {
-  await useLoding.withLoading(() => useCart.delCart(id))
+  delModal.value.hideModal()
+  if (id === 'all') {
+    await useLoding.withLoading(() => useCart.delAllCart())
+  } else {
+    await useLoding.withLoading(() => useCart.delCart(id))
+  }
   await useLoding.withLoading(() => useCart.getCart())
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  })
 }
 
 async function changeQty(id, qty) {
@@ -207,20 +269,41 @@ async function changeQty(id, qty) {
   await useLoding.withLoading(() => useCart.getCart())
 }
 
-function goCheckOut() {
-  router.push({ name: 'checkout' })
+async function goCheckOut() {
+  useLoding.showLoading()
+  try {
+    const resp = await axios.post(`${APIUrl}/v2/api/${APIPath}/order`, {
+      data: { ...userForm.value },
+    })
+    useLoding.hideLoading()
+    console.log('已建立訂單，即將進入結帳頁面', resp)
+    isChecked.value = true
+    orderId.value = resp.data.orderId
+  } catch (error) {
+    console.error('送出結帳錯誤', error)
+  }
 }
+
+function suceessClose() {
+  isChecked.value = false
+  router.push({ name: 'checkout', params: { id: orderId.value } })
+}
+
+//取整數
+function getInteger(val) {
+  if (val == null) return ''
+  return Math.floor(val)
+}
+
+function test() {}
+
+console.log('原型', test.prototype)
 
 getCart()
 </script>
 <style scoped>
 .all-page {
   padding-top: 130px;
-}
-.title {
-  font-family: 'Zen Old Mincho', serif;
-  font-weight: 700;
-  color: rgb(61, 61, 61);
 }
 
 .NT-font {
@@ -238,5 +321,12 @@ getCart()
 
 .coupon-text {
   color: rgb(210, 95, 0);
+}
+
+@media (max-width: 576px) {
+  .img-box {
+    width: 250px;
+    height: 250px;
+  }
 }
 </style>

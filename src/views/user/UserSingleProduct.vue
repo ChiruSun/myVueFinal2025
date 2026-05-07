@@ -18,7 +18,9 @@
 
         <div class="col-12 col-md-7">
           <p class="subtitle fw-bold">沁心</p>
-          <h2 class="title">{{ productData?.content }}</h2>
+          <h2 class="project-main-font project-main-color-black fw-bold mb-4">
+            {{ productData?.content }}
+          </h2>
           <div>
             <p>{{ productData?.description }}</p>
           </div>
@@ -106,7 +108,7 @@
     <p class="text-danger text-center fs-5 mb-5">※注意：此為網頁練習作品，商品不存在，為捏造內容</p>
     <HomeFooter></HomeFooter>
   </div>
-  <CartAddSucess v-if="addCartSucessIsShow" @suceess-close="suceessClose"></CartAddSucess>
+  <CartAddSuccess v-if="addCartSucessIsShow" @suceess-close="suceessClose"></CartAddSuccess>
   <SectionLoading v-show="loading" />
 </template>
 <script setup>
@@ -121,7 +123,7 @@ import emitter from '@/emitter'
 
 import SectionLoading from '@/components/SectionLoading.vue'
 import HomeFooter from '@/components/user/HomeFooter.vue'
-import CartAddSucess from '@/components/user/CartAddSucess.vue'
+import CartAddSuccess from '@/components/user/CartAddSuccess.vue'
 import ChangeQuantity from '@/components/user/ChangeQuantity.vue'
 
 const APIUrl = import.meta.env.VITE_API_URL
@@ -269,13 +271,6 @@ getSingleProduct()
   color: rgb(120, 144, 125);
   font-size: 20px;
   margin-bottom: 8px;
-}
-
-.title {
-  font-family: 'Zen Old Mincho', serif;
-  font-weight: 700;
-  color: rgb(61, 61, 61);
-  margin-bottom: 24px;
 }
 
 .price {

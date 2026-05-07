@@ -4,16 +4,15 @@ import axios from 'axios'
 
 export const useCartStore = defineStore('cart', () => {
   const cartItems = ref([])
-  const hasCart = computed(() => cartItems.value.length > 0)
   const cartTotal = ref(0)
-  const cartFinalTotal = ref(0)
-  const cartDiscount = computed(() => {
-    return cartTotal.value - cartFinalTotal.value
-  })
-  const hasCoupon = computed(() => {
-    return Boolean(cartItems.value[0]?.coupon)
-  })
   const isAddCartSuccess = ref(false)
+  const hasCart = computed(() => cartItems.value.length > 0)
+  const discountTotal = computed(() => {
+    return cartItems.value.reduce((sum, item) => {
+      return sum + Math.floor(item.final_total)
+    }, 0)
+  })
+  const discountPrice = computed(() => cartTotal.value - discountTotal.value)
 
   const APIUrl = import.meta.env.VITE_API_URL
   const APIPath = import.meta.env.VITE_API_PATH
@@ -23,9 +22,8 @@ export const useCartStore = defineStore('cart', () => {
       const resp = await axios.get(`${APIUrl}/v2/api/${APIPath}/cart`)
       cartItems.value = resp.data.data.carts
       cartTotal.value = resp.data.data.total
-      cartFinalTotal.value = Math.trunc(resp.data.data.final_total)
     } catch (error) {
-      console.log('請求購物車資料時發生錯誤', error)
+      console.error('請求購物車資料時發生錯誤', error)
     }
   }
 
@@ -43,6 +41,14 @@ export const useCartStore = defineStore('cart', () => {
     }
   }
 
+  async function delAllCart() {
+    try {
+      await axios.delete(`${APIUrl}/v2/api/${APIPath}/carts`)
+    } catch (error) {
+      console.log('刪除全部購物車錯誤', error)
+    }
+  }
+
   async function changeCartQty(id, qty) {
     const changeData = { data: { product_id: id, qty: qty } }
     try {
@@ -56,13 +62,13 @@ export const useCartStore = defineStore('cart', () => {
     cartItems,
     hasCart,
     cartTotal,
-    cartFinalTotal,
-    cartDiscount,
-    hasCoupon,
     isAddCartSuccess,
+    discountTotal,
+    discountPrice,
     getCart,
     addCart,
     delCart,
+    delAllCart,
     changeCartQty,
   }
 })

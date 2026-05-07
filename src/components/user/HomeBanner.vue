@@ -29,7 +29,7 @@
           <div class="can-shadow2"><div class="circle-grad"></div></div>
           <div class="can-shadow3"><div class="circle-grad"></div></div>
         </div>
-        <div class="banner-text position-absolute">
+        <div class="banner-text project-main-font position-absolute">
           <h1 class="title">沁入内心</h1>
           <div class="my-rwd-title">
             <p class="title2">最信任的洗髮乳</p>
@@ -150,7 +150,6 @@
   top: 200px;
   left: 500px;
   z-index: 7;
-  font-family: 'Zen Old Mincho', serif;
   font-weight: 900;
 }
 

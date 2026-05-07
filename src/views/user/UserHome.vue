@@ -8,7 +8,7 @@
     <div class="d-flex flex-column justify-content-between h-100">
       <img src="@/img/wave_up.png" class="img-fluid my-wave-up" alt="" />
       <div class="container d-flex justify-content-center align-items-center greenery-content">
-        <div class="greenery-slogan">
+        <div class="greenery-slogan project-main-font fw-900">
           <p class="mb-0">用植物的方式<br />照顧毎天</p>
         </div>
         <div class="greenery-can">
@@ -58,8 +58,6 @@ AOS.init()
 
 .greenery-slogan {
   font-size: 80px;
-  font-family: 'Zen Old Mincho', serif;
-  font-weight: 900;
   text-wrap: nowrap;
   color: rgb(63, 93, 63);
   background-color: rgba(255, 255, 255, 0.9);

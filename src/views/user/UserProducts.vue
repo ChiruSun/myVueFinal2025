@@ -132,7 +132,7 @@
           </div>
         </div>
       </div>
-      <CartAddSucess v-if="addCartSucessIsShow" @suceess-close="suceessClose"></CartAddSucess>
+      <CartAddSuccess v-if="addCartSucessIsShow" @suceess-close="suceessClose"></CartAddSuccess>
       <HomeFooter></HomeFooter>
     </div>
   </div>
@@ -146,7 +146,7 @@ import axios from 'axios'
 import emitter from '@/emitter'
 
 import SectionLoading from '@/components/SectionLoading.vue'
-import CartAddSucess from '@/components/user/CartAddSucess.vue'
+import CartAddSuccess from '@/components/user/CartAddSuccess.vue'
 import HomeFooter from '@/components/user/HomeFooter.vue'
 
 import { useCartStore } from '@/stores/cartStore'
