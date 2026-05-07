@@ -1,1 +1,0 @@
-import{_ as o,c as s,a,o as c}from"./index-D-71LtB1.js";const n={},t={class:"loading-w-bg"};function r(d,e){return c(),s("div",t,e[0]||(e[0]=[a("div",{class:"big-loader"},null,-1)]))}const i=o(n,[["render",r],["__scopeId","data-v-3ff9ae13"]]);export{i as S};
