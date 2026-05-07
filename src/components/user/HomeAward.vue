@@ -85,12 +85,6 @@
   font-size: 54px;
 }
 
-.area3 {
-  width: 100%;
-  height: 1000px;
-  background-image: url('@/img/HomeArea3.png');
-}
-
 @media (max-width: 1400px) {
   .award-t1-1 {
     margin-top: 69px;
