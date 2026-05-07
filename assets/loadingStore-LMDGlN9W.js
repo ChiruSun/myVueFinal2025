@@ -1,1 +1,0 @@
-import{I as t,r}from"./index-BdOGx5rJ.js";const f=t("loading",()=>{const n=r(!1);function a(){n.value=!0}function o(){n.value=!1}async function i(e){try{a(),await e()}finally{o()}}return{isLoading:n,showLoading:a,hideLoading:o,withLoading:i}});export{f as u};
