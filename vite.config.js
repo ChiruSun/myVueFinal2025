@@ -7,7 +7,7 @@ import svgLoader from 'vite-svg-loader'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/myVueFinal2025/',
+  base: './',
   plugins: [vue(), vueDevTools(), svgLoader()],
   resolve: {
     alias: {

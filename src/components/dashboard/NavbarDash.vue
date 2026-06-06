@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">最終作業</a>
+      <a class="navbar-brand" href="#" @click.prevent="">最終作業後台</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -29,11 +29,6 @@
           <li class="nav-item">
             <RouterLink to="/dashboard/coupon" class="nav-link" active-class="active"
               >優惠劵</RouterLink
-            >
-          </li>
-          <li class="nav-item">
-            <RouterLink to="/dashboard/test" class="nav-link" active-class="active"
-              >測試</RouterLink
             >
           </li>
         </ul>

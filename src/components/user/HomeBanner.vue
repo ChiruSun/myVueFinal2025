@@ -7,7 +7,7 @@
             <div class="row justify-content-end">
               <div class="col-5 asp-woman">
                 <div class="womanbox woman-padding">
-                  <img class="img-fluid" src="/src/img/woman_shampoo.png" alt="" />
+                  <img class="img-fluid" src="/src/img/woman_shampoo2.png" alt="" />
                 </div>
               </div>
             </div>

@@ -6,10 +6,8 @@
         <div class="col-12 col-md-8">
           <div v-show="useCart.hasCart">
             <div v-for="item in useCart.cartItems" :key="item.id">
-              <div
-                class="d-flex flex-column flex-sm-row py-4 border-bottom border-secondary-subtle"
-              >
-                <div class="d-flex flex-column flex-sm-row">
+              <div class="d-flex py-4 border-bottom border-secondary-subtle">
+                <div class="d-flex">
                   <div
                     class="d-flex justify-content-end align-items-center me-0 mb-2 me-sm-4 mb-sm-0"
                   >
@@ -21,7 +19,9 @@
                       ><i class="bi bi-x-lg"></i
                     ></a>
                   </div>
-                  <div class="d-flex justify-content-center me-0 mb-3 me-sm-4 mb-sm-0">
+                  <div
+                    class="d-flex justify-content-center align-items-center me-2 mb-3 me-sm-4 mb-sm-0"
+                  >
                     <div class="img-box rounded-3 overflow-hidden">
                       <img
                         class="img-fluid"
@@ -64,7 +64,7 @@
                     </div>
 
                     <div class="d-flex justify-content-end align-items-baseline w-100">
-                      <p class="me-2 mb-0">數量：</p>
+                      <p class="me-0 me-sm-2 mb-0">數量：</p>
                       <div class="product-qty">
                         <ChangeQuantity
                           :input-disabled="true"
@@ -325,8 +325,8 @@ getCart()
 
 @media (max-width: 576px) {
   .img-box {
-    width: 250px;
-    height: 250px;
+    width: 100px;
+    height: 100px;
   }
 }
 </style>

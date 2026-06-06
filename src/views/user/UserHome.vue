@@ -30,9 +30,8 @@ import HomeIntroduce from '@/components/user/HomeIntroduce.vue'
 import HomeAward from '@/components/user/HomeAward.vue'
 import HomeFooter from '@/components/user/HomeFooter.vue'
 
-import AOS from 'aos'
+import * as AOS from 'aos'
 import 'aos/dist/aos.css'
-
 AOS.init()
 </script>
 <style scoped>

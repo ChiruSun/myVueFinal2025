@@ -2,7 +2,7 @@
   <div class="container mt-5">
     <form class="row justify-content-center" @submit.prevent="loginSubmit">
       <div class="col-md-6">
-        <h1 class="h3 mb-3 font-weight-normal">請先登入</h1>
+        <h1 class="h3 mb-3 font-weight-normal">後台登入</h1>
         <div class="mb-2">
           <label for="inputEmail" class="sr-only">Email位址</label>
           <input
@@ -42,7 +42,7 @@ import axios from 'axios'
 import { useRouter } from 'vue-router'
 import emitter from '@/emitter'
 
-const loginPostData = ref({ username: 'cycfup67@gmail.com', password: 'cyc20254' })
+const loginPostData = ref({ username: '666666@666666.com.tw', password: '666666' })
 const router = useRouter()
 
 const btnDisable = ref(false)

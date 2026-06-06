@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="banner mb-3 mb-md-5"></div>
-    <div v-show="!loading">
+    <div>
       <div class="container mb-5">
         <div class="mb-5 d-block d-md-none fs-5">
           <a href="#" class="my-filter-link" title="篩選" @click.prevent="filterPhone"
@@ -136,8 +136,6 @@
       <HomeFooter></HomeFooter>
     </div>
   </div>
-  <div class="loadingBG" v-show="loading"></div>
-  <SectionLoading v-show="loading" />
 </template>
 <script setup>
 import { ref, watch } from 'vue'
@@ -145,11 +143,11 @@ import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 import emitter from '@/emitter'
 
-import SectionLoading from '@/components/SectionLoading.vue'
 import CartAddSuccess from '@/components/user/CartAddSuccess.vue'
 import HomeFooter from '@/components/user/HomeFooter.vue'
 
 import { useCartStore } from '@/stores/cartStore'
+import { useLoadingStore } from '@/stores/loadingStore'
 
 const APIUrl = import.meta.env.VITE_API_URL
 const APIPath = import.meta.env.VITE_API_PATH
@@ -157,13 +155,13 @@ const productUrl = `${APIUrl}v2/api/${APIPath}/products?page=`
 
 const showProduct = ref(null)
 const productPageData = ref(null)
-const loading = ref(true)
 const btnLoadingId = ref(null)
 const SideIsShow = ref(false)
 const addCartSucessIsShow = ref(false)
 const route = useRoute()
 const router = useRouter()
 const cartStore = useCartStore()
+const loadingStore = useLoadingStore()
 
 const productDefaultImage = '/src/img/NoImage.jpg'
 
@@ -176,7 +174,7 @@ watch(
 
 //請求資料
 async function askProduct(category = 'all', page = 1) {
-  loading.value = true
+  loadingStore.showLoading()
   SideIsShow.value = false
   let apiUrl = productUrl + page
 
@@ -186,7 +184,7 @@ async function askProduct(category = 'all', page = 1) {
   const resp = await axios.get(apiUrl)
   showProduct.value = resp.data.products
   productPageData.value = resp.data.pagination
-  loading.value = false
+  loadingStore.hideLoading()
 }
 
 function changePage({ category, page = 1 } = {}) {
@@ -228,9 +226,9 @@ async function addCart(id) {
 
 async function suceessClose() {
   addCartSucessIsShow.value = false
-  loading.value = true
+  loadingStore.showLoading()
   await cartStore.getCart()
-  loading.value = false
+  loadingStore.hideLoading()
 }
 </script>
 <style scoped>
@@ -246,12 +244,6 @@ async function suceessClose() {
   background-position: center center;
   background-size: contain;
   background-repeat: no-repeat;
-}
-
-.loadingBG {
-  position: absolute;
-  inset: 0;
-  background-color: rgb(233, 241, 235);
 }
 
 .my-filter-link {

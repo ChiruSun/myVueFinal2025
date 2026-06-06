@@ -16,7 +16,6 @@ const router = useRouter()
 async function verify() {
   try {
     await verifyLogin()
-    console.log('有進dashs')
   } catch (error) {
     emitter.emit('toast', {
       message: error.response.data.message,

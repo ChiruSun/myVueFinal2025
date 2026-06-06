@@ -35,20 +35,6 @@
             <div>
               <div class="d-flex align-items-baseline">
                 <p>數量({{ productData?.unit }})：</p>
-                <!-- <div class="input-group mb-3 me-2 my-quantity-box">
-                  <button class="btn btn-outline-secondary" type="button" @click="decrease">
-                    -
-                  </button>
-                  <input
-                    type="text"
-                    class="form-control text-center"
-                    v-model="productQuantity"
-                    @blur="limitNumber"
-                  />
-                  <button class="btn btn-outline-secondary" type="button" @click="increase">
-                    +
-                  </button>
-                </div> -->
                 <ChangeQuantity
                   class="me-2 my-quantity-box"
                   v-model="productQuantity"
@@ -58,8 +44,9 @@
             </div>
 
             <div class="d-flex">
-              <button class="btn btn-dark fs-5 px-4 me-2" type="button">立即結帳</button
-              ><button class="btn btn-outline-dark px-4 fs-5" type="button" @click="addCart()">
+              <button class="btn btn-dark fs-5 px-4 me-2" type="button" @click="nowCheckOut">
+                立即結帳</button
+              ><button class="btn btn-outline-dark px-4 fs-5" type="button" @click="addCart">
                 加入購物車<i class="bi bi-cart-fill ms-2"></i>
               </button>
             </div>
@@ -88,7 +75,9 @@
       >
         <swiper-slide v-for="item in showsimilarProducts" :key="item.id"
           ><div class="card similar-card">
-            <img :src="item.imageUrl" class="card-img-top" alt="..." />
+            <div class="overflow-hidden">
+              <img :src="item.imageUrl" class="card-img-top similar-card-img" alt="..." />
+            </div>
             <div class="card-body">
               <h5 class="card-title">{{ item.content }}</h5>
               <div class="d-flex align-items-baseline">
@@ -109,7 +98,6 @@
     <HomeFooter></HomeFooter>
   </div>
   <CartAddSuccess v-if="addCartSucessIsShow" @suceess-close="suceessClose"></CartAddSuccess>
-  <SectionLoading v-show="loading" />
 </template>
 <script setup>
 import { ref, watch } from 'vue'
@@ -119,9 +107,9 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 // Import Swiper styles
 import 'swiper/css'
 import { useCartStore } from '@/stores/cartStore'
+import { useLoadingStore } from '@/stores/loadingStore'
 import emitter from '@/emitter'
 
-import SectionLoading from '@/components/SectionLoading.vue'
 import HomeFooter from '@/components/user/HomeFooter.vue'
 import CartAddSuccess from '@/components/user/CartAddSuccess.vue'
 import ChangeQuantity from '@/components/user/ChangeQuantity.vue'
@@ -133,6 +121,7 @@ const { id } = defineProps({
 })
 const router = useRouter()
 const cartStore = useCartStore()
+const loadingStore = useLoadingStore()
 
 const productData = ref(null)
 const loading = ref(false)
@@ -154,7 +143,7 @@ watch(
 //取得商品
 async function getSingleProduct() {
   let nowCategory
-  loading.value = true
+  loadingStore.showLoading()
   try {
     const resp = await axios.get(`${APIUrl}v2/api/${APIPath}/product/${id}`)
     productData.value = resp.data.product
@@ -168,7 +157,7 @@ async function getSingleProduct() {
     router.push('/no_this_product')
   } finally {
     arrangeProduct()
-    loading.value = false
+    loadingStore.hideLoading()
   }
 }
 
@@ -228,8 +217,8 @@ function goHome() {
 }
 
 async function addCart() {
+  loadingStore.showLoading()
   const qty = Number(productQuantity.value)
-  loading.value = true
   await cartStore.addCart(productData.value.id, qty)
   if (cartStore.isAddCartSuccess) {
     addCartSucessIsShow.value = true
@@ -239,16 +228,24 @@ async function addCart() {
       type: 'danger',
     })
   }
-  loading.value = false
+  loadingStore.hideLoading()
   productQuantity.value = 1
   cartStore.isAddCartSuccess = false
 }
 
+async function nowCheckOut() {
+  loadingStore.showLoading()
+  const qty = Number(productQuantity.value)
+  await cartStore.addCart(productData.value.id, qty)
+  loadingStore.hideLoading()
+  router.push({ name: 'cart' })
+}
+
 async function suceessClose() {
   addCartSucessIsShow.value = false
-  loading.value = true
+  loadingStore.showLoading()
   await cartStore.getCart()
-  loading.value = false
+  loadingStore.hideLoading()
 }
 
 getSingleProduct()
@@ -281,6 +278,14 @@ getSingleProduct()
 .origin-price {
   color: rgb(152, 152, 152);
   text-decoration: line-through;
+}
+
+.similar-card-img {
+  transition: transform 0.3s ease;
+}
+
+.similar-card-img:hover {
+  transform: scale(1.05);
 }
 
 .similar-btn {

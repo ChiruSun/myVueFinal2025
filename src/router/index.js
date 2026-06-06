@@ -75,10 +75,6 @@ const router = createRouter({
           path: 'coupon',
           component: () => import('../views/dashboard/CouponView.vue'),
         },
-        {
-          path: 'test',
-          component: () => import('../views/TestView.vue'),
-        },
       ],
     },
   ],
