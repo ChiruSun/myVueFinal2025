@@ -8,18 +8,18 @@
           productData?.category
         }}</a>
         <p class="me-2">></p>
-        <p class="fw-bold my-theme-color">{{ productData?.content }}</p>
+        <p class="fw-bold my-theme-color">{{ productData?.title }}</p>
       </div>
 
       <div class="row gy-4 mb-5">
         <div class="col-12 col-md-5 rounded-5 overflow-hidden">
-          <img :src="productData?.imageUrl" class="img-fluid" :alt="productData?.content" />
+          <img :src="productData?.imageUrl" class="img-fluid" :alt="productData?.title" />
         </div>
 
         <div class="col-12 col-md-7">
           <p class="subtitle fw-bold">沁心</p>
           <h2 class="project-main-font project-main-color-black fw-bold mb-4">
-            {{ productData?.content }}
+            {{ productData?.title }}
           </h2>
           <div>
             <p>{{ productData?.description }}</p>
@@ -79,7 +79,7 @@
               <img :src="item.imageUrl" class="card-img-top similar-card-img" alt="..." />
             </div>
             <div class="card-body">
-              <h5 class="card-title">{{ item.content }}</h5>
+              <h5 class="card-title">{{ item.title }}</h5>
               <div class="d-flex align-items-baseline">
                 <p class="fw-bold me-2 text-danger">NT${{ item.price }}</p>
                 <p class="smaller-money">NT${{ item.origin_price }}</p>
@@ -164,9 +164,9 @@ async function getSingleProduct() {
 //類似商品
 function arrangeProduct() {
   let nowProductName = null
-  nowProductName = productData.value.content
+  nowProductName = productData.value.title
   //去除該商品頁面的商品
-  similarProducts.value = similarProducts.value.filter((item) => item.content !== nowProductName)
+  similarProducts.value = similarProducts.value.filter((item) => item.title !== nowProductName)
   //其中取3項商品
   const result = [...similarProducts.value].sort(() => Math.random() - 0.5).slice(0, 3)
   showsimilarProducts.value = result
